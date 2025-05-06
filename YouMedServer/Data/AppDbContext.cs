@@ -19,6 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<ClinicalService> ClinicalServices { get; set; }
     public DbSet<AppointmentClinicalService> AppointmentClinicalServices { get; set; }
+    public DbSet<ClinicWorkingTime> ClinicWorkingTimes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

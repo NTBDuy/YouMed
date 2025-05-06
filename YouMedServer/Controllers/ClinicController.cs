@@ -269,5 +269,24 @@ namespace YouMedServer.Controllers
 
             return (clinic, null);
         }
+
+        // GET: api/clinic/working-hours/{clinicId}
+        // Lấy danh sách giờ làm việc của phòng khám theo ClinicID
+        [HttpGet("working-hours/{clinicId}")]
+        public async Task<IActionResult> GetWorkingHours(int clinicId)
+        {
+            var clinic = await _dbContext.Clinics.FindAsync(clinicId);
+            if (clinic == null)
+                return NotFound(new { message = "Clinic not found." });
+
+            var workingHours = await _dbContext.ClinicWorkingTimes
+                .Where(wh => wh.ClinicID == clinicId)
+                .ToListAsync();
+
+            if (workingHours.Count == 0)
+                return NotFound(new { message = "This clinic doesn't have any working hours!" });
+
+            return Ok(workingHours);
+        }
     }
 }
