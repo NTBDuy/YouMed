@@ -1,0 +1,194 @@
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using YouMedServer.Models.DTOs;
+using YouMedServer.Models.Entities;
+
+namespace YouMedServer.Controllers
+{
+    [Route("api/patient")]
+    [ApiController]
+    public class PatientController : ControllerBase
+    {
+        private readonly AppDbContext _dbContext;
+        public PatientController(AppDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        // GET: api/patient/{patientId}
+        // Lấy thông tin chi tiết bệnh nhân theo PatientID
+        [HttpGet("{patientId}")]
+        public async Task<IActionResult> GetPatientsById(int patientId)
+        {
+            var patients = await _dbContext.Patients
+                .FirstOrDefaultAsync(p => p.PatientID == patientId);
+
+            if (patients == null)
+                return NotFound(new { message = "Patient not found for this User!" });
+
+            return Ok(patients);
+        }
+
+        // GET: api/patient/user/{userId}
+        // Lấy danh sách bệnh nhân theo UserID (bệnh nhân do người dùng quản lý)
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetPatientsByUserId(int userId)
+        {
+            var patients = await _dbContext.Patients
+                .Where(p => p.UserID == userId && !p.IsDeleted)
+                .ToListAsync();
+
+            if (patients.Count == 0)
+                return NotFound(new { message = "Patient not found for this User!" });
+
+            return Ok(patients);
+        }
+
+        // GET: api/patient/clinic/{userId}
+        // Lấy danh sách bệnh nhân theo phòng khám mà nhân viên (UserID) đang làm việc
+        [HttpGet("clinic/{userId}")]
+        public async Task<IActionResult> GetPatientsByClinic(int userId)
+        {
+            var clinicStaff = await _dbContext.ClinicStaffs
+                .FirstOrDefaultAsync(s => s.UserID == userId);
+
+            if (clinicStaff == null)
+                return NotFound(new { message = "This user does not belong to any clinic." });
+
+            var hasClinic = await _dbContext.Clinics.AnyAsync(c => c.ClinicID == clinicStaff.ClinicID);
+            if (!hasClinic)
+                return NotFound(new { message = "Clinic not found." });
+
+            var patientIDs = await _dbContext.Appointments
+                .Where(a => a.ClinicID == clinicStaff.ClinicID)
+                .Select(a => a.PatientID)
+                .Distinct()
+                .ToListAsync();
+
+            if (patientIDs.Count == 0)
+                return NotFound(new { message = "No appointments found for this clinic." });
+
+            var patients = await _dbContext.Patients
+                .Where(p => patientIDs.Contains(p.PatientID) && !p.IsDeleted)
+                .ToListAsync();
+
+            if (patients.Count == 0)
+                return NotFound(new { message = "No patients found for this clinic." });
+
+            return Ok(patients);
+        }
+
+        // GET: api/patient/doctor/{userId}
+        // Lấy danh sách bệnh nhân đã từng có lịch hẹn với bác sĩ (UserID)
+        [HttpGet("doctor/{userId}")]
+        public async Task<IActionResult> GetPatientsByDoctor(int userId)
+        {
+            var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
+            if (doctor == null)
+                return NotFound(new { message = "Doctor not found." });
+
+            var appointments = await _dbContext.Appointments
+                .Where(a => a.DoctorID == doctor.DoctorID)
+                .ToListAsync();
+            if (appointments.Count == 0)
+                return NotFound(new { message = "No appointments found for this doctor." });
+
+            var patientIds = appointments.Select(a => a.PatientID).Distinct().ToList();
+
+            var patients = await _dbContext.Patients
+                    .Where(p => patientIds.Contains(p.PatientID) && !p.IsDeleted)
+                    .ToListAsync();
+
+            return Ok(patients);
+        }
+
+        // POST: api/patient
+        // Thêm bệnh nhân mới vào hệ thống
+        [HttpPost]
+        public async Task<IActionResult> AddPatient([FromBody] PatientDTO dto)
+        {
+            var user = await _dbContext.Users.FindAsync(dto.UserID);
+            if (user == null)
+                return BadRequest(new { message = "User not found." });
+
+            var existingSelfPatient = await _dbContext.Patients
+                .FirstOrDefaultAsync(p => p.Relationship == "Self" && p.UserID == dto.UserID);
+
+            if (existingSelfPatient != null && dto.Relationship == "Self")
+                return BadRequest(new { message = "User already has a self relationship." });
+
+            var newPatient = new Patient
+            {
+                Fullname = dto.Fullname,
+                PhoneNumber = dto.PhoneNumber,
+                EmailAddress = dto.EmailAddress,
+                DateOfBirth = dto.DateOfBirth,
+                Gender = dto.Gender,
+                HomeAddress = dto.HomeAddress,
+                CitizenID = dto.CitizenID,
+                Relationship = dto.Relationship,
+                User = user
+            };
+
+            _dbContext.Patients.Add(newPatient);
+            await _dbContext.SaveChangesAsync();
+            return Ok(new { message = "Patient added successfully." });
+        }
+
+        // PUT: api/patient/{patientId}
+        // Cập nhật thông tin bệnh nhân theo PatientID
+        [HttpPut("{patientId}")]
+        public async Task<IActionResult> UpdatePatient(int patientId, [FromBody] PatientDTO dto)
+        {
+            var patient = await _dbContext.Patients.FindAsync(patientId);
+            if (patient == null)
+                return NotFound(new { message = "Patient not found!" });
+
+            if (dto.Relationship == "Self")
+            {
+                var existingSelfPatient = await _dbContext.Patients
+                    .FirstOrDefaultAsync(p => p.UserID == dto.UserID && p.Relationship == "Self");
+
+                if (existingSelfPatient != null)
+                    return BadRequest(new { message = "User already has a self relationship." });
+            }
+
+            patient.Fullname = dto.Fullname;
+            patient.PhoneNumber = dto.PhoneNumber;
+            patient.EmailAddress = dto.EmailAddress;
+            patient.DateOfBirth = dto.DateOfBirth;
+            patient.Gender = dto.Gender;
+            patient.HomeAddress = dto.HomeAddress;
+            patient.CitizenID = dto.CitizenID;
+            patient.Relationship = dto.Relationship;
+
+            await _dbContext.SaveChangesAsync();
+            return Ok(new { message = "Profile updated successfully." });
+        }
+
+        // DELETE: api/patient/{patientId}
+        // Xóa bệnh nhân theo PatientID
+        [HttpDelete("{patientId}")]
+        public async Task<IActionResult> DeletePatient(int patientId)
+        {
+            var patient = await _dbContext.Patients.FindAsync(patientId);
+            if (patient == null)
+                return NotFound(new { message = "Patient not found." });
+
+            bool hasAppointments = await _dbContext.Appointments.AnyAsync(e => e.PatientID == patientId);
+
+            if (hasAppointments)
+            {
+                patient.IsDeleted = true;
+                await _dbContext.SaveChangesAsync();
+                return Ok(new { message = "Patient marked as deleted due to existing appointments." });
+            }
+
+            _dbContext.Patients.Remove(patient);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new { message = "Patient deleted successfully." });
+        }
+    }
+}

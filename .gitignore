@@ -1,0 +1,73 @@
+# === .NET ===
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.dbmdl
+*.pdb
+*.cache
+*.log
+*.tlog
+*.vscode/
+
+# NuGet
+packages/
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Rider
+.idea/
+
+# === React Native / Node.js ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.expo/
+.expo-shared/
+web-build/
+*.expo
+*.expo-shared
+dist/
+build/
+
+# React Native specific
+ios/Pods/
+*.xcworkspace
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcuserdatad/
+android/.gradle/
+android/app/build/
+android/.idea/
+*.keystore
+
+# macOS
+.DS_Store
+
+# Expo
+*.expo-shared/
+*.expo/
+
+# Metro bundler cache
+.cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+*.log
+
+# Misc
+.env
+.env.*
