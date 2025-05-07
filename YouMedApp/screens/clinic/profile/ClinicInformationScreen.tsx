@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import React, { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderSection from 'components/HeaderSection';
 import { AuthContext } from 'contexts/AuthContext';
@@ -24,7 +24,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Clinic } from 'types/Clinic';
 import * as Location from 'expo-location';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const ClinicInformationScreen = () => {
   const navigation = useNavigation<any>();
@@ -116,14 +115,14 @@ const ClinicInformationScreen = () => {
 
       <ScrollView>
         <View className="p-4">
-          <View className="mb-8">
+          <View className="mb-4">
             <Text className="text-lg font-semibold text-gray-800">Update information</Text>
             <Text className="text-gray-600">
               Manage your clinic's profile information visible to patients.
             </Text>
           </View>
 
-          <View className="mb-6">
+          <View className="mb-4">
             <View className="mb-2 flex-row items-center">
               <FontAwesomeIcon icon={faHouseChimneyMedical} size={16} color="#0891b2" />
               <Text className="ml-2 font-medium text-gray-700">Clinic Name</Text>
@@ -136,7 +135,7 @@ const ClinicInformationScreen = () => {
             />
           </View>
 
-          <View className="mb-6">
+          <View className="mb-4">
             <View className="mb-2 flex-row items-center">
               <FontAwesomeIcon icon={faLocationDot} size={16} color="#0891b2" />
               <Text className="ml-2 font-medium text-gray-700">Clinic Address</Text>
@@ -150,7 +149,7 @@ const ClinicInformationScreen = () => {
             />
           </View>
 
-          <View className="mb-6">
+          <View className="mb-4">
             <View className="mb-2 flex-row items-center">
               <FontAwesomeIcon icon={faCircleExclamation} size={16} color="#0891b2" />
               <Text className="ml-2 font-medium text-gray-700">Introduction</Text>
@@ -166,7 +165,7 @@ const ClinicInformationScreen = () => {
             />
           </View>
 
-          <View className="mb-8">
+          <View className="mb-4">
             <View className="mb-2 flex-row items-center">
               <FontAwesomeIcon icon={faPhone} size={16} color="#0891b2" />
               <Text className="ml-2 font-medium text-gray-700">Phone Number</Text>
@@ -178,7 +177,7 @@ const ClinicInformationScreen = () => {
             />
           </View>
 
-          <View className="mb-6">
+          <View className="mb-4">
             <Text className="mb-4 text-lg font-semibold text-gray-800">Select Clinic Location</Text>
             <MapView
               style={{ height: 300, borderRadius: 10 }}
@@ -211,7 +210,7 @@ const ClinicInformationScreen = () => {
           <TouchableOpacity
             onPress={handleSubmit}
             disabled={isLoading}
-            className={`mb-6 flex-row items-center justify-center rounded-lg p-4 ${
+            className={`mb-4 flex-row items-center justify-center rounded-lg p-4 ${
               isLoading ? 'bg-cyan-400' : 'bg-cyan-600'
             }`}>
             {isLoading ? (
