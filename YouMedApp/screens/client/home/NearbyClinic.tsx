@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderSection from 'components/HeaderSection';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Callout, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
 import { Clinic } from 'types/Clinic';
 import { fetchClinics } from 'utils/apiUtils';
 import { ActivityIndicator, View, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const NearbyClinic = () => {
+  const navigation = useNavigation<any>();
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(
     null
   );
@@ -88,16 +90,25 @@ const NearbyClinic = () => {
             latitudeDelta: 0.05,
             longitudeDelta: 0.05,
           }}>
-          <Marker coordinate={userLocation} title="You are here" />
+          <Marker coordinate={userLocation} title="You are here" image={require('../../../assets/location_dot_icon_72.png')} />
           {sortedClinics.map((clinic) => {
             if (!clinic.latitude || !clinic.longitude || !clinic.clinicID) return null;
             return (
               <Marker
                 key={clinic.clinicID.toString()}
                 coordinate={{ latitude: clinic.latitude, longitude: clinic.longitude }}
-                title={clinic.name}
-                description={clinic.clinicAddress ?? 'No address'}
-              />
+                image={require('../../../assets/clinic_icon_72.png')}>
+                <Callout
+                  onPress={() =>
+                    navigation.navigate('ClinicDetails', { clinicId: clinic.clinicID })
+                  }>
+                  <View style={{ width: 200 }}>
+                    <Text style={{ fontWeight: 'bold' }}>{clinic.name}</Text>
+                    <Text>{clinic.clinicAddress ?? 'No address'}</Text>
+                    <Text style={{ color: 'blue', marginTop: 5 }}>More details</Text>
+                  </View>
+                </Callout>
+              </Marker>
             );
           })}
         </MapView>

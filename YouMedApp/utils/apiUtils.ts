@@ -113,6 +113,11 @@ export const updateServiceResult = async (serviceId: number, data: any) => {
 /**
  * CLINIC API
  */
+// Lấy thông tin phòng khám theo ClinicID
+export const fetchClinicDetail = async (clinicId: number) => {
+  return fetch(`${API_URL}/clinic/${clinicId}`);
+};
+
 // Lấy thông tin chi tiết của phòng khám mà nhân viên đang làm việc
 export const fetchClinicInformation = async (userId: number) => {
   return fetch(`${API_URL}/clinic/information/${userId}`);

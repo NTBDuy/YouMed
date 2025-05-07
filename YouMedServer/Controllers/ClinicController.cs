@@ -43,6 +43,48 @@ namespace YouMedServer.Controllers
             return Ok(data);
         }
 
+        // GET: api/clinic/{clinicId}
+        // Lấy thông tin chi tiết của phòng khám theo ClinicID
+        [HttpGet("{clinicId}")]
+        public async Task<IActionResult> GetClinicById(int clinicId)
+        {
+            var clinic = await _dbContext.Clinics.FindAsync(clinicId);
+
+            if (clinic == null)
+                return NotFound(new { message = "Clinic not found." });
+
+            var specialties = await _dbContext.ClinicSpecialties
+                .Where(cs => cs.ClinicID == clinic.ClinicID)
+                .Include(cs => cs.Specialty)
+                .Select(cs => new SpecialtyDto
+                {
+                    SpecialtyID = cs.Specialty!.SpecialtyID,
+                    Name = cs.Specialty.Name
+                })
+                .ToListAsync();
+
+            var workingHours = await _dbContext.ClinicWorkingHours
+                .Where(wh => wh.ClinicID == clinic.ClinicID)
+                .ToListAsync();
+
+            var response = new ClinicResponseDTO
+            {
+                ClinicID = clinic.ClinicID,
+                Name = clinic.Name,
+                ClinicAddress = clinic.ClinicAddress,
+                Introduction = clinic.Introduction,
+                PhoneNumber = clinic.PhoneNumber,
+                CreatedAt = clinic.CreatedAt,
+                Specialties = specialties,
+                Latitude = clinic.Latitude,
+                Longitude = clinic.Longitude,
+
+                clinicWorkingHours = workingHours
+            };
+
+            return Ok(response);
+        }
+
         // GET: api/clinic/information/{userId}
         // Lấy thông tin chi tiết của phòng khám mà nhân viên đang làm việc
         [HttpGet("information/{userId}")]
