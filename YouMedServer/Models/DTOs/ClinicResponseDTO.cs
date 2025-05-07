@@ -12,5 +12,7 @@ namespace YouMedServer.Models.DTOs
         public DateTime? CreatedAt { get; set; }
         public List<SpecialtyDto>? Specialties { get; set; }
         public List<ClinicWorkingHours> clinicWorkingHours { get; set; } = new List<ClinicWorkingHours>();
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
     }
 }

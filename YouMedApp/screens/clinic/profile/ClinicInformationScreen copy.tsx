@@ -1,4 +1,3 @@
-import MapView, { Marker } from 'react-native-maps';
 import {
   View,
   Text,
@@ -23,15 +22,10 @@ import {
   faCircleExclamation,
 } from '@fortawesome/free-solid-svg-icons';
 import { Clinic } from 'types/Clinic';
-import * as Location from 'expo-location';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const ClinicInformationScreen = () => {
   const navigation = useNavigation<any>();
 
-  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(
-    null
-  );
   const { user } = useContext(AuthContext);
 
   const [clinic, setClinic] = useState<Clinic>();
@@ -40,8 +34,6 @@ const ClinicInformationScreen = () => {
   const [clinicAddress, setClinicAddress] = useState('');
   const [introduction, setIntroduction] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [latitude, setLatitude] = useState(0); // Thêm state cho latitude
-  const [longitude, setLongitude] = useState(0); // Thêm state cho longitude
 
   const getData = async () => {
     try {
@@ -54,8 +46,6 @@ const ClinicInformationScreen = () => {
         setClinicAddress(data.clinicAddress);
         setIntroduction(data.introduction);
         setPhoneNumber(data.phoneNumber);
-        setLatitude(data.latitude || 0); // Lấy latitude từ API
-        setLongitude(data.longitude || 0); // Lấy longitude từ API
       }
     } catch (error) {
       console.error('Error fetching appointment:', error);
@@ -73,8 +63,6 @@ const ClinicInformationScreen = () => {
         clinicAddress,
         introduction,
         phoneNumber,
-        latitude,
-        longitude, // Gửi longitude
       };
       const res = await updateClinicInformation(data);
       if (res.ok) {
@@ -89,24 +77,9 @@ const ClinicInformationScreen = () => {
     }
   };
 
-  const getUserLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      console.warn('Permission denied');
-      return;
-    }
-
-    const loc = await Location.getCurrentPositionAsync({});
-    setUserLocation({
-      latitude: loc.coords.latitude,
-      longitude: loc.coords.longitude,
-    });
-  };
-
   useFocusEffect(
     useCallback(() => {
       getData();
-      getUserLocation();
     }, [user])
   );
 
@@ -176,36 +149,6 @@ const ClinicInformationScreen = () => {
               onChangeText={setPhoneNumber}
               className="rounded-lg border border-gray-300 bg-white p-3"
             />
-          </View>
-
-          <View className="mb-6">
-            <Text className="mb-4 text-lg font-semibold text-gray-800">Select Clinic Location</Text>
-            <MapView
-              style={{ height: 300, borderRadius: 10 }}
-              initialRegion={{
-              latitude: latitude || (userLocation ? userLocation.latitude : 0),
-              longitude: longitude || (userLocation ? userLocation.longitude : 0),
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-              }}
-              region={{
-              latitude: latitude || (userLocation ? userLocation.latitude : 0),
-              longitude: longitude || (userLocation ? userLocation.longitude : 0),
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-              }}
-              onPress={(e) => {
-              const { latitude, longitude } = e.nativeEvent.coordinate;
-              setLatitude(latitude);
-              setLongitude(longitude);
-              }}>
-              <Marker
-              coordinate={{
-                latitude: latitude || (userLocation ? userLocation.latitude : 0),
-                longitude: longitude || (userLocation ? userLocation.longitude : 0),
-              }}
-              />
-            </MapView>
           </View>
 
           <TouchableOpacity

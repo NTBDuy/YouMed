@@ -9,5 +9,7 @@ namespace YouMedServer.Models.DTOs
         public string? ClinicAddress { get; set; }
         public string? Introduction { get; set; }
         public string? PhoneNumber { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
     }
 }

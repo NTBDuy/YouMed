@@ -20,8 +20,10 @@ import { HomeStackParamList } from '../../../types/StackParamList';
 import { fetchClinics, fetchClientUpcomingAppointments } from 'utils/apiUtils';
 import { getUserInitials, isOpenNow } from 'utils/userHelpers';
 import { showTodayOrTomorrow } from 'utils/datetimeUtils';
+import { calculateDistance, getUserLocation, LocationData } from 'utils/locationUtils';
 import { Appointment } from 'types/Appointment';
 import { Clinic } from 'types/Clinic';
+import * as Location from 'expo-location';
 
 const HomeScreen = () => {
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
@@ -41,17 +43,23 @@ const HomeScreen = () => {
     }
   };
 
-  const getClinicList = async () => {
+  const getClinicList = async (): Promise<void> => {
     try {
-      const response = await fetchClinics();
+      // Lấy vị trí hiện tại của người dùng
+      const locationData = await getUserLocation(Location);
 
+      const response = await fetchClinics();
       if (response.ok) {
         const data = await response.json();
-        const enhancedData = data.map((clinic: Clinic) => ({
-          ...clinic,
-          rating: (Math.random() * 2 + 3).toFixed(1),
-          distance: `${(Math.random() * 5).toFixed(1)} km`,
-        }));
+        const enhancedData = data.map((clinic: Clinic) => {
+          const distance = calculateDistance(clinic.latitude, clinic.longitude, locationData);
+            
+          return {
+            ...clinic,
+            rating: (Math.random() * 2 + 3).toFixed(1),
+            distance: distance !== null ? distance.toFixed(1) : null,
+          };
+        });
         setClinics(enhancedData);
       } else {
         console.log('Failed to fetch clinic list');
@@ -64,8 +72,6 @@ const HomeScreen = () => {
   const handlePress = () => {
     Alert.alert('', 'Coming Soon!');
   };
-
-
 
   useFocusEffect(
     useCallback(() => {
@@ -237,7 +243,9 @@ const HomeScreen = () => {
                       {clinic.rating} ({clinic.rating})
                     </Text>
                     <View className="mx-2 h-1 w-1 rounded-full bg-gray-300" />
-                    <Text className="text-xs text-gray-500">{clinic.distance}</Text>
+                    <Text className="text-xs text-gray-500">
+                      {clinic.distance ? `${clinic.distance} km` : '...'}
+                    </Text>
                   </View>
                   <View className="flex-row items-center">
                     <FontAwesomeIcon icon={faLocationDot} size={12} color="#64748b" />
@@ -247,7 +255,9 @@ const HomeScreen = () => {
                   </View>
                   <View className="mt-1 flex-row items-center">
                     <FontAwesomeIcon icon={faClock} size={12} color="#64748b" />
-                    <Text className="ml-1 text-xs text-gray-500">{isOpenNow(clinic.clinicWorkingHours) ? 'Open now' : 'Closed'}</Text>
+                    <Text className="ml-1 text-xs text-gray-500">
+                      {isOpenNow(clinic.clinicWorkingHours) ? 'Open now' : 'Closed'}
+                    </Text>
                   </View>
                 </View>
               </Pressable>

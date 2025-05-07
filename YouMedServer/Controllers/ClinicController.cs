@@ -89,6 +89,9 @@ namespace YouMedServer.Controllers
                     PhoneNumber = clinic.PhoneNumber,
                     CreatedAt = clinic.CreatedAt,
                     Specialties = specialties,
+                    Latitude = clinic.Latitude,
+                    Longitude = clinic.Longitude,
+
                     clinicWorkingHours = workingHours
                 });
             }
@@ -253,6 +256,8 @@ namespace YouMedServer.Controllers
             clinic.ClinicAddress = dto.ClinicAddress;
             clinic.Introduction = dto.Introduction;
             clinic.PhoneNumber = dto.PhoneNumber;
+            clinic.Latitude = dto.Latitude;
+            clinic.Longitude = dto.Longitude;
 
             await _dbContext.SaveChangesAsync();
             return Ok(new { message = "Clinic updated succesfully!" });

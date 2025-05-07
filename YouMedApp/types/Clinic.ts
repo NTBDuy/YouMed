@@ -10,8 +10,9 @@ export interface Clinic {
     createdAt: string; 
     specialties: Specialties[]
     clinicWorkingHours: WorkingHours[]
+    latitude: number; // Thêm thuộc tính latitude
+    longitude: number; // Thêm thuộc tính longitude
 
-    // Phát triển sau
     rating?: number;
     distance?: string;
     openingHours?: string;

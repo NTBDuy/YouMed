@@ -9,21 +9,11 @@ import { fetchClinics } from 'utils/apiUtils';
 import { ActivityIndicator, View, Text } from 'react-native';
 
 const NearbyClinic = () => {
-  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(
+    null
+  );
   const [sortedClinics, setSortedClinics] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const getCoordinatesFromAddress = async (address: string) => {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`
-    );
-    const data = await response.json();
-    if (data.length === 0) return null;
-    return {
-      latitude: parseFloat(data[0].lat),
-      longitude: parseFloat(data[0].lon),
-    };
-  };
 
   const getUserLocation = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -45,19 +35,19 @@ const NearbyClinic = () => {
       const response = await fetchClinics();
       if (response.ok) {
         const data = await response.json();
-        const clinicsWithLocation = await Promise.all(
-          data.map(async (clinic: Clinic) => {
-            const coords = await getCoordinatesFromAddress(clinic.clinicAddress);
-            if (!coords) return null;
+        const clinicsWithDistance = data
+          .filter((clinic: Clinic) => clinic.latitude && clinic.longitude)
+          .map((clinic: Clinic) => {
             const distance = userLocation
-              ? getDistance(userLocation, coords)
+              ? getDistance(userLocation, {
+                  latitude: clinic.latitude,
+                  longitude: clinic.longitude,
+                })
               : Number.MAX_SAFE_INTEGER;
-            return { ...clinic, location: coords, distance };
-          })
-        );
-        const validClinics = clinicsWithLocation.filter((c) => c !== null);
-        validClinics.sort((a, b) => a.distance - b.distance);
-        setSortedClinics(validClinics);
+            return { ...clinic, distance };
+          });
+        clinicsWithDistance.sort((a: any, b: any) => a.distance - b.distance);
+        setSortedClinics(clinicsWithDistance);
       } else {
         console.error('Failed to fetch clinics');
       }
@@ -84,7 +74,7 @@ const NearbyClinic = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <HeaderSection title="Clinic Around Here" backBtn />
 
-      {(!userLocation || isLoading) ? (
+      {!userLocation || isLoading ? (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#3B82F6" />
           <Text className="mt-2 text-gray-500">Loading clinics...</Text>
@@ -99,14 +89,17 @@ const NearbyClinic = () => {
             longitudeDelta: 0.05,
           }}>
           <Marker coordinate={userLocation} title="You are here" />
-          {sortedClinics.map((clinic) => (
-            <Marker
-              key={clinic.clinicID}
-              coordinate={clinic.location}
-              title={clinic.name}
-              description={clinic.clinicAddress}
-            />
-          ))}
+          {sortedClinics.map((clinic) => {
+            if (!clinic.latitude || !clinic.longitude || !clinic.clinicID) return null;
+            return (
+              <Marker
+                key={clinic.clinicID.toString()}
+                coordinate={{ latitude: clinic.latitude, longitude: clinic.longitude }}
+                title={clinic.name}
+                description={clinic.clinicAddress ?? 'No address'}
+              />
+            );
+          })}
         </MapView>
       )}
     </SafeAreaView>

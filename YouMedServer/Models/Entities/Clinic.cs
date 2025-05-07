@@ -13,6 +13,10 @@ namespace YouMedServer.Models.Entities
         [MaxLength(255)]
         public string? ClinicAddress { get; set; }
 
+        public double? Latitude { get; set; }
+        
+        public double? Longitude { get; set; }
+
         public string? Introduction { get; set; }
 
         [MaxLength(20)]

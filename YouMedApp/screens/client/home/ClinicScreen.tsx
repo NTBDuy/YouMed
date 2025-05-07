@@ -14,10 +14,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHospital, faMapPin, faStar, faClock } from '@fortawesome/free-solid-svg-icons';
 
 import { fetchClinics, fetchSpecialties } from 'utils/apiUtils';
+import { isOpenNow } from 'utils/userHelpers';
+import { calculateDistance, getUserLocation, LocationData } from 'utils/locationUtils';
 import HeaderSection from 'components/HeaderSection';
 import { Clinic } from 'types/Clinic';
 import { Specialties } from 'types/Specialties';
-import { isOpenNow } from 'utils/userHelpers';
+import * as Location from 'expo-location';
 
 const ClinicScreen = () => {
   const navigation = useNavigation<any>();
@@ -28,24 +30,31 @@ const ClinicScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterOptions, setFilterOptions] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState('All');
+  const [userLocation, setUserLocation] = useState<LocationData>(null);
 
-  const getClinicList = async () => {
+  const getClinicList = async (locationData: LocationData = null): Promise<void> => {
     try {
       setIsLoading(true);
+      
+      // Sử dụng location từ tham số nếu có, hoặc từ state hiện tại
+      const currentLocation = locationData || userLocation;
+      
       const response = await fetchClinics();
-
       if (response.ok) {
         const data = await response.json();
-        const enhancedData = data.map((clinic: Clinic) => ({
-          ...clinic,
-          rating: (Math.random() * 2 + 3).toFixed(1),
-          distance: `${(Math.random() * 5).toFixed(1)} km`,
-          // openingHours: Math.random() > 0.2 ? 'Open now' : 'Closed',
-        }));
+        
+        const enhancedData = data.map((clinic: Clinic) => {
+          const distance = calculateDistance(clinic.latitude, clinic.longitude, currentLocation);
+            
+          return {
+            ...clinic,
+            rating: (Math.random() * 2 + 3).toFixed(1),
+            distance: distance !== null ? distance.toFixed(1) : null,
+          };
+        });
+        
         setClinics(enhancedData);
         setFilteredClinics(enhancedData);
-      } else {
-        console.log('Failed to fetch clinic list');
       }
     } catch (error) {
       console.error('Error fetching clinic list:', error);
@@ -54,23 +63,25 @@ const ClinicScreen = () => {
     }
   };
 
-  const onRefresh = async () => {
+  const onRefresh = async (): Promise<void> => {
     setRefreshing(true);
-    await getClinicList();
+    const locationData = await getUserLocation(Location);
+    setUserLocation(locationData);
+    await getClinicList(locationData);
     setRefreshing(false);
   };
 
-  const handleSearch = (text: string) => {
+  const handleSearch = (text: string): void => {
     setSearchQuery(text);
     filterClinics(text, activeFilter);
   };
 
-  const clearSearch = () => {
+  const clearSearch = (): void => {
     setSearchQuery('');
     filterClinics('', activeFilter);
   };
 
-  const filterClinics = (query: string, filterType: string) => {
+  const filterClinics = (query: string, filterType: string): void => {
     let filtered = clinics;
 
     if (query) {
@@ -93,7 +104,7 @@ const ClinicScreen = () => {
     setFilteredClinics(filtered);
   };
 
-  const getSpecialtyList = async () => {
+  const getSpecialtyList = async (): Promise<void> => {
     try {
       const response = await fetchSpecialties();
       if (response.ok) {
@@ -105,15 +116,37 @@ const ClinicScreen = () => {
     }
   };
 
-  const handleFilterChange = (filter: string) => {
+  const handleFilterChange = (filter: string): void => {
     setActiveFilter(filter);
     filterClinics(searchQuery, filter);
   };
 
   useEffect(() => {
-    getClinicList();
-    getSpecialtyList();
+    const init = async (): Promise<void> => {
+      // Lấy vị trí người dùng và truyền trực tiếp vào hàm getClinicList
+      const locationData = await getUserLocation(Location);
+      setUserLocation(locationData);
+      await getClinicList(locationData);
+      await getSpecialtyList();
+    };
+    init();
   }, []);
+
+  // Theo dõi thay đổi vị trí và cập nhật khoảng cách nếu cần
+  useEffect(() => {
+    if (userLocation && clinics.length > 0) {
+      // Cập nhật khoảng cách cho các phòng khám khi có vị trí mới
+      const updatedClinics = clinics.map((clinic) => ({
+        ...clinic,
+        distance: calculateDistance(clinic.latitude, clinic.longitude, userLocation)?.toFixed(1) || undefined,
+      }));
+      
+      setClinics(updatedClinics);
+      
+      // Cập nhật danh sách đã lọc với khoảng cách mới
+      filterClinics(searchQuery, activeFilter);
+    }
+  }, [userLocation]);
 
   const renderClinicItem = ({ item }: { item: Clinic }) => (
     <Pressable
@@ -144,7 +177,9 @@ const ClinicScreen = () => {
         <View className="mb-2 flex-row items-center">
           <FontAwesomeIcon icon={faMapPin} size={12} color="#6b7280" />
           <Text className="ml-1 flex-1 text-xs text-gray-600">{item.clinicAddress}</Text>
-          <Text className="text-xs font-medium text-blue-600">{item.distance}</Text>
+          <Text className="text-xs font-medium text-blue-600">
+            {item.distance ? `${item.distance} km` : '...'}
+          </Text>
         </View>
 
         <View className="mb-3 flex-row items-center">
@@ -212,7 +247,7 @@ const ClinicScreen = () => {
 
       {isLoading && !refreshing ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#0d9488" />
+          <ActivityIndicator size="large" color="#2563eb" />
           <Text className="mt-4 text-gray-600">Loading clinics...</Text>
         </View>
       ) : (
@@ -221,7 +256,7 @@ const ClinicScreen = () => {
             data={filteredClinics}
             keyExtractor={(item) => item.clinicID.toString()}
             renderItem={renderClinicItem}
-            className='mb-24'
+            className="mb-24"
             contentContainerClassName="pb-16"
             showsVerticalScrollIndicator={false}
             refreshControl={
