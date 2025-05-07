@@ -76,6 +76,10 @@ namespace YouMedServer.Controllers
                     })
                     .ToListAsync();
 
+                var workingHours = await _dbContext.ClinicWorkingHours
+                    .Where(wh => wh.ClinicID == clinic.ClinicID)
+                    .ToListAsync();
+
                 clinicResponses.Add(new ClinicResponseDTO
                 {
                     ClinicID = clinic.ClinicID,
@@ -84,7 +88,8 @@ namespace YouMedServer.Controllers
                     Introduction = clinic.Introduction,
                     PhoneNumber = clinic.PhoneNumber,
                     CreatedAt = clinic.CreatedAt,
-                    Specialties = specialties
+                    Specialties = specialties,
+                    clinicWorkingHours = workingHours
                 });
             }
 
@@ -270,23 +275,51 @@ namespace YouMedServer.Controllers
             return (clinic, null);
         }
 
-        // GET: api/clinic/working-hours/{clinicId}
-        // Lấy danh sách giờ làm việc của phòng khám theo ClinicID
-        [HttpGet("working-hours/{clinicId}")]
-        public async Task<IActionResult> GetWorkingHours(int clinicId)
+        // GET: api/clinic/user/{userId}/working-hours
+        // Lấy danh sách giờ làm việc của phòng khám theo UserID của nhân viên phòng khám
+        [HttpGet("user/{userId}/working-hours")]
+        public async Task<IActionResult> GetWorkingHours(int userId)
         {
-            var clinic = await _dbContext.Clinics.FindAsync(clinicId);
-            if (clinic == null)
+            var (clinic, error) = await GetClinicFromUserId(userId);
+            if (error != null)
                 return NotFound(new { message = "Clinic not found." });
 
-            var workingHours = await _dbContext.ClinicWorkingTimes
-                .Where(wh => wh.ClinicID == clinicId)
+            var workingHours = await _dbContext.ClinicWorkingHours
+                .Where(wh => wh.ClinicID == clinic!.ClinicID)
                 .ToListAsync();
 
-            if (workingHours.Count == 0)
-                return NotFound(new { message = "This clinic doesn't have any working hours!" });
-
             return Ok(workingHours);
+        }
+
+        // PUT: api/clinic/user/{userId}/working-hours
+        // Cập nhật giờ làm việc của phòng khám theo UserID của nhân viên phòng khám
+        [HttpPut("user/{userId}/working-hours")]
+        public async Task<IActionResult> UpdateWorkingHours(int userId, [FromBody] List<ClinicWorkingHourDTO> workingHoursDto)
+        {
+            var (clinic, error) = await GetClinicFromUserId(userId);
+            if (error != null)
+                return NotFound(new { message = "Clinic not found." });
+
+            var existingWorkingHours = await _dbContext.ClinicWorkingHours
+                .Where(wh => wh.ClinicID == clinic!.ClinicID)
+                .ToListAsync();
+
+            _dbContext.ClinicWorkingHours.RemoveRange(existingWorkingHours);
+
+            var newWorkingHours = workingHoursDto.Select(dto => new ClinicWorkingHours
+            {
+                ClinicID = clinic!.ClinicID,
+                DayOfWeek = dto.DayOfWeek,
+                StartTime = dto.StartTime,
+                EndTime = dto.EndTime,
+                IsActive = dto.IsActive,
+                LastUpdated = DateTime.UtcNow
+            }).ToList();
+
+            await _dbContext.ClinicWorkingHours.AddRangeAsync(newWorkingHours);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new { message = "Working hours updated successfully!" });
         }
     }
 }

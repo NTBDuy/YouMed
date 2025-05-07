@@ -19,6 +19,7 @@ import PatientListScreen from 'screens/clinic/profile/PatientListScreen';
 import PatientDetailScreen from 'screens/PatientDetailScreen';
 import ClinicRecordScreen from 'screens/clinic/home/ClinicRecordScreen';
 import ClinicInformationScreen from 'screens/clinic/profile/ClinicInformationScreen';
+import WorkingHoursScreen from 'screens/clinic/profile/WorkingHoursScreen';
 
 const ClinicTab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -69,6 +70,7 @@ function ProfileStackScreen({ setIsLoggedIn }: { setIsLoggedIn: (value: boolean)
       <ProfileStack.Screen name="PatientMedicalHistory" component={MedicalHistoryScreen} />
       <ProfileStack.Screen name="RecordDetail" component={RecordDetailScreen} />
       <ProfileStack.Screen name='ClinicInformation' component={ClinicInformationScreen}/>
+      <ProfileStack.Screen name='WorkingHours' component={WorkingHoursScreen}/>
     </ProfileStack.Navigator>
   );
 }

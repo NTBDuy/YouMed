@@ -1,4 +1,4 @@
-import { format } from 'date-fns'; 
+import { format } from 'date-fns';
 
 type DateInput = Date | string | number | null | undefined;
 
@@ -67,7 +67,6 @@ export const formatLocaleDateTime = (input: DateInput, locale = 'en-US'): string
   });
 };
 
-
 // Tạo biến ngày hôm nay và ngày mai
 const today = new Date();
 const tomorrow = new Date();
@@ -75,7 +74,7 @@ tomorrow.setDate(today.getDate() + 1);
 
 /**
  * Hàm hiển thị "Today", "Tomorrow" hoặc ngày cụ thể
- * @param date 
+ * @param date
  * @returns Today | Tomorrow | "Monday, Apr 28"
  */
 export const showTodayOrTomorrow = (date: string) => {
@@ -86,6 +85,16 @@ export const showTodayOrTomorrow = (date: string) => {
   } else if (format(appointmentDate, 'yyyy-MM-dd') === format(tomorrow, 'yyyy-MM-dd')) {
     return 'Tomorrow';
   } else {
-    return format(appointmentDate, 'EEEE, MMM dd'); // Ví dụ: 
+    return format(appointmentDate, 'EEEE, MMM dd'); // Ví dụ:
   }
+};
+
+/**
+ * Hàm hiển thị thứ ngày trong tuần
+ * @param number
+ * @returns "Monday", "Tuesday", ...
+ */
+export const showDayOfWeek = (number: number) => {
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  return daysOfWeek[number];
 };

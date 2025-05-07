@@ -36,7 +36,7 @@ const HeaderSection = ({
       <View className="mt-2 flex-row items-center justify-center">
         {backBtn && (
           <Pressable
-            className="absolute left-0 flex-row py-4 pr-10"
+            className="absolute left-0 flex-row py-4 pr-20 "
             onPress={() => navigation.goBack()}>
             <FontAwesomeIcon icon={faChevronLeft} size={16} color="#FFFFFF" />
           </Pressable>

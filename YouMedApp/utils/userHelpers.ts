@@ -22,3 +22,26 @@ export const getUserInitials = (fullname?: string, email?: string): string => {
 export const getGenderText = (gender: string): string => {
   return gender === 'M' ? 'Male' : gender === 'F' ? 'Female' : 'Other';
 };
+
+/**
+ * Hàm xem thời gian làm việc của phòng khám có đang mở hay không
+ * @param workingHours 
+ * @returns 
+ */
+export const isOpenNow = (workingHours: any[]) => {
+  const currentHour = new Date().getHours();
+  const currentDay = new Date().getDay();
+  const todayWorkingHours = workingHours.find(
+    (wh) => wh.dayOfWeek === currentDay
+  );
+  if (todayWorkingHours) {
+    const [startHour, startMinute] = todayWorkingHours.startTime.split(':').map(Number);
+    const [endHour, endMinute] = todayWorkingHours.endTime.split(':').map(Number);
+    const startTime = new Date();
+    startTime.setHours(startHour, startMinute);
+    const endTime = new Date();
+    endTime.setHours(endHour, endMinute);
+    return currentHour >= startHour && currentHour < endHour;
+  }
+  return false;
+}

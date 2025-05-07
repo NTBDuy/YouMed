@@ -212,13 +212,13 @@ namespace YouMedServer.Migrations
                     b.ToTable("ClinicStaffs");
                 });
 
-            modelBuilder.Entity("YouMedServer.Models.Entities.ClinicWorkingTime", b =>
+            modelBuilder.Entity("YouMedServer.Models.Entities.ClinicWorkingHours", b =>
                 {
-                    b.Property<int>("ClinicWorkingTimeID")
+                    b.Property<int>("ClinicWorkingHoursID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClinicWorkingTimeID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClinicWorkingHoursID"));
 
                     b.Property<int>("ClinicID")
                         .HasColumnType("int");
@@ -229,15 +229,18 @@ namespace YouMedServer.Migrations
                     b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 
-                    b.HasKey("ClinicWorkingTimeID");
+                    b.HasKey("ClinicWorkingHoursID");
 
-                    b.ToTable("ClinicWorkingTimes");
+                    b.ToTable("ClinicWorkingHours");
                 });
 
             modelBuilder.Entity("YouMedServer.Models.Entities.ClinicalService", b =>

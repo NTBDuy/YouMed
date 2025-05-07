@@ -158,6 +158,16 @@ export const updateClinicInformation = async (data: any) => {
   return submitData(`clinic/information`, 'PUT', data);
 };
 
+// Lấy danh sách giờ làm việc của phòng khám theo ClinicID
+export const fetchWorkingHours = async (userId: number) => {
+  return fetch(`${API_URL}/clinic/user/${userId}/working-hours`);
+};
+
+// Cập nhật giờ làm việc của phòng khám
+export const updateWorkingHours = async (userId: number, data: any) => {
+  return submitData(`clinic/user/${userId}/working-hours`, 'PUT', data);
+};
+
 /**
  * MEDICAL RECORDS API
  */

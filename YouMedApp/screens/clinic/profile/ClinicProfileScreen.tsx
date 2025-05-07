@@ -15,6 +15,7 @@ import {
   faCalendarDays,
   faUsers,
   faLocationDot,
+  faClock,
   faImage
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -89,12 +90,11 @@ const ClinicProfileScreen = ({ setIsLoggedIn }: { setIsLoggedIn: (value: boolean
             }}
           />
           <MenuItem
-            icon={faLocationDot}
-            title="Location & Hours"
+            icon={faClock}
+            title="Working Hours"
             color="#ef4444"
             onPress={() => {
-              // navigation.navigate('ClinicLocation');
-              handlePress();
+              navigation.navigate('WorkingHours');
             }}
           />
           <MenuItem

@@ -18,7 +18,7 @@ import {
 import { AuthContext } from 'contexts/AuthContext';
 import { HomeStackParamList } from '../../../types/StackParamList';
 import { fetchClinics, fetchClientUpcomingAppointments } from 'utils/apiUtils';
-import { getUserInitials } from 'utils/userHelpers';
+import { getUserInitials, isOpenNow } from 'utils/userHelpers';
 import { showTodayOrTomorrow } from 'utils/datetimeUtils';
 import { Appointment } from 'types/Appointment';
 import { Clinic } from 'types/Clinic';
@@ -51,7 +51,7 @@ const HomeScreen = () => {
           ...clinic,
           rating: (Math.random() * 2 + 3).toFixed(1),
           distance: `${(Math.random() * 5).toFixed(1)} km`,
-          openingHours: Math.random() > 0.2 ? 'Open now' : 'Closed',
+          // openingHours: Math.random() > 0.2 ? 'Open now' : 'Closed',
         }));
         setClinics(enhancedData);
       } else {
@@ -246,7 +246,7 @@ const HomeScreen = () => {
                   </View>
                   <View className="mt-1 flex-row items-center">
                     <FontAwesomeIcon icon={faClock} size={12} color="#64748b" />
-                    <Text className="ml-1 text-xs text-gray-500">{clinic.openingHours}</Text>
+                    <Text className="ml-1 text-xs text-gray-500">{isOpenNow(clinic.clinicWorkingHours) ? 'Open now' : 'Closed'}</Text>
                   </View>
                 </View>
               </Pressable>

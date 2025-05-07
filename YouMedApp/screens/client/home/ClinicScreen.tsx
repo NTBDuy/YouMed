@@ -17,6 +17,7 @@ import { fetchClinics, fetchSpecialties } from 'utils/apiUtils';
 import HeaderSection from 'components/HeaderSection';
 import { Clinic } from 'types/Clinic';
 import { Specialties } from 'types/Specialties';
+import { isOpenNow } from 'utils/userHelpers';
 
 const ClinicScreen = () => {
   const navigation = useNavigation<any>();
@@ -39,7 +40,7 @@ const ClinicScreen = () => {
           ...clinic,
           rating: (Math.random() * 2 + 3).toFixed(1),
           distance: `${(Math.random() * 5).toFixed(1)} km`,
-          openingHours: Math.random() > 0.2 ? 'Open now' : 'Closed',
+          // openingHours: Math.random() > 0.2 ? 'Open now' : 'Closed',
         }));
         setClinics(enhancedData);
         setFilteredClinics(enhancedData);
@@ -150,11 +151,11 @@ const ClinicScreen = () => {
           <FontAwesomeIcon
             icon={faClock}
             size={12}
-            color={item.openingHours === 'Open now' ? '#10b981' : '#ef4444'}
+            color={isOpenNow(item.clinicWorkingHours) === true ? '#10b981' : '#ef4444'}
           />
           <Text
-            className={`ml-1 text-xs ${item.openingHours === 'Open now' ? 'text-green-500' : 'text-red-500'} font-medium`}>
-            {item.openingHours}
+            className={`ml-1 text-xs ${isOpenNow(item.clinicWorkingHours) === true ? 'text-green-500' : 'text-red-500'} font-medium`}>
+            {isOpenNow(item.clinicWorkingHours) ? 'Open now' : 'Closed'}
           </Text>
         </View>
 
@@ -215,12 +216,13 @@ const ClinicScreen = () => {
           <Text className="mt-4 text-gray-600">Loading clinics...</Text>
         </View>
       ) : (
-        <View className="-mb-10">
+        <View className="">
           <FlatList
             data={filteredClinics}
             keyExtractor={(item) => item.clinicID.toString()}
             renderItem={renderClinicItem}
-            contentContainerClassName="pb-6"
+            className='mb-24'
+            contentContainerClassName="pb-16"
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl

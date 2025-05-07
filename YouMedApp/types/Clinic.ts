@@ -1,4 +1,5 @@
 import { Specialties } from "./Specialties";
+import { WorkingHours } from "./WorkingHours";
 
 export interface Clinic {
     clinicID: number;
@@ -8,6 +9,7 @@ export interface Clinic {
     phoneNumber: string;
     createdAt: string; 
     specialties: Specialties[]
+    clinicWorkingHours: WorkingHours[]
 
     // Phát triển sau
     rating?: number;
