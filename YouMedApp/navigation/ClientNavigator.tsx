@@ -23,6 +23,7 @@ import UpdateInformation from 'screens/client/profile/UpdateInformation';
 import MedicalHistoryPatient from 'screens/MedicalHistoryScreen';
 import RecordDetailScreen from 'screens/RecordDetailScreen';
 import ScheduleFollowUp from 'screens/client/home/ScheduleFollowUp';
+import NearbyClinic from 'screens/client/home/NearbyClinic';
 
 const MainStack = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -44,6 +45,7 @@ function HomeStackScreen() {
       <ProfileStack.Screen name="PatientRecordList" component={MedicalHistoryPatient} />
       <ProfileStack.Screen name="RecordDetail" component={RecordDetailScreen} />
       <AppointmentStack.Screen name="Reschedule" component={RescheduleScreen} />
+      <HomeStack.Screen name="NearbyClinic" component={NearbyClinic} />
     </HomeStack.Navigator>
   );
 }

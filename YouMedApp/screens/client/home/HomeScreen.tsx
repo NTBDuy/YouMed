@@ -51,7 +51,6 @@ const HomeScreen = () => {
           ...clinic,
           rating: (Math.random() * 2 + 3).toFixed(1),
           distance: `${(Math.random() * 5).toFixed(1)} km`,
-          // openingHours: Math.random() > 0.2 ? 'Open now' : 'Closed',
         }));
         setClinics(enhancedData);
       } else {
@@ -65,6 +64,8 @@ const HomeScreen = () => {
   const handlePress = () => {
     Alert.alert('', 'Coming Soon!');
   };
+
+
 
   useFocusEffect(
     useCallback(() => {
@@ -171,7 +172,7 @@ const HomeScreen = () => {
             <Pressable
               className="w-1/4 items-center"
               onPress={() => {
-                handlePress();
+                navigation.navigate('NearbyClinic');
               }}>
               <View className="mb-2 h-16 w-16 items-center justify-center rounded-2xl bg-blue-100">
                 <FontAwesomeIcon icon={faLocationDot} size={24} color="#2563eb" />

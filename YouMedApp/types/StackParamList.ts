@@ -24,6 +24,7 @@ export type HomeStackParamList = {
   Notification: undefined;
   Detail: any;
   MedicalHistory: undefined;
+  NearbyClinic: undefined;
 };
 
 export type AppointmentStackParamList = {
