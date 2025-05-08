@@ -18,7 +18,7 @@ import {
 import { AuthContext } from 'contexts/AuthContext';
 import { DoctorStackParamList } from '../../../types/StackParamList';
 import { getGenderText, getUserInitials } from 'utils/userHelpers';
-import {  fetchAppointmentsByDoctor, fetchPatients, fetchTodayDoctorStats } from 'utils/apiUtils';
+import {  fetchAppointments, fetchPatients, fetchTodayDoctorStats } from 'utils/apiUtils';
 import { formatLocaleDateTime, showTodayOrTomorrow } from 'utils/datetimeUtils';
 import Appointment from 'types/Appointment';
 import Patient from 'types/Patient';
@@ -50,7 +50,7 @@ const DoctorHomeScreen = () => {
 
   const getUpcomingAppointments = async () => {
     try {
-      const res = await fetchAppointmentsByDoctor(user!.userID, 'Scheduled');
+      const res = await fetchAppointments(user!.userID, 'Scheduled');
       if (res.ok) {
         const data = await res.json();
         setUpcomingAppointments(data);
@@ -62,7 +62,7 @@ const DoctorHomeScreen = () => {
 
   const getInProgressAppointments = async () => {
     try {
-      const res = await fetchAppointmentsByDoctor(user!.userID, 'In Progress');
+      const res = await fetchAppointments(user!.userID, 'In Progress');
       if (res.ok) {
         const data = await res.json();
         setInProgressAppointments(data);

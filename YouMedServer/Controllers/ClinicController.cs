@@ -17,10 +17,10 @@ namespace YouMedServer.Controllers
             _dbContext = dbContext;
         }
 
-        // GET: api/clinic/stats/{userId}
+        // GET: api/clinic/stats
         // Lấy tổng quan số lượng lịch hẹn trong ngày của phòng khám theo UserID của nhân viên phòng khám
-        [HttpGet("stats/{userId}")]
-        public async Task<IActionResult> GetClinicStatsForToday(int userId)
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetClinicStatsForToday([FromQuery] int userId)
         {
             var (clinic, error) = await GetClinicFromUserId(userId);
             if (error != null)
@@ -85,10 +85,10 @@ namespace YouMedServer.Controllers
             return Ok(response);
         }
 
-        // GET: api/clinic/information/{userId}
+        // GET: api/clinic/information
         // Lấy thông tin chi tiết của phòng khám mà nhân viên đang làm việc
-        [HttpGet("information/{userId}")]
-        public async Task<IActionResult> GetClinicInformation(int userId)
+        [HttpGet("information")]
+        public async Task<IActionResult> GetClinicInformation([FromQuery] int userId)
         {
             var (clinic, error) = await GetClinicFromUserId(userId);
             if (error != null)
@@ -97,9 +97,9 @@ namespace YouMedServer.Controllers
             return Ok(clinic);
         }
 
-        // GET: api/clinic/list
+        // GET: api/clinics
         // Lấy danh sách tất cả phòng khám
-        [HttpGet("list")]
+        [HttpGet("/api/clinics")]
         public async Task<IActionResult> GetClinics()
         {
             var clinics = await _dbContext.Clinics.ToListAsync();
@@ -142,14 +142,14 @@ namespace YouMedServer.Controllers
         }
 
 
-        // GET: api/clinic/specialty
+        // GET: api/clinic/specialties
         // Lấy danh sách các chuyên khoa (Specialties)
-        [HttpGet("specialty")]
-        public async Task<IActionResult> GetSpecialites()
+        [HttpGet("specialties")]
+        public async Task<IActionResult> GetSpecialties()
         {
-            var specialtyNames = await _dbContext.Specialties.ToListAsync();
+            var specialties = await _dbContext.Specialties.ToListAsync();
 
-            return Ok(specialtyNames);
+            return Ok(specialties);
         }
 
         // GET: api/clinic/{clinicId}/doctors
@@ -197,10 +197,10 @@ namespace YouMedServer.Controllers
             return Ok(doctorResponses);
         }
 
-        // GET: api/clinic/doctor/{userId}
+        // GET: api/clinic/doctors
         // Lấy danh sách bác sĩ theo UserID của nhân viên phòng khám
-        [HttpGet("doctor/{userId}")]
-        public async Task<IActionResult> GetDoctorsByClinicStaffUser(int userId)
+        [HttpGet("doctors")]
+        public async Task<IActionResult> GetDoctorsByClinicStaffUser([FromQuery] int userId)
         {
             var (clinic, error) = await GetClinicFromUserId(userId);
             if (error != null)
@@ -242,28 +242,6 @@ namespace YouMedServer.Controllers
             }
 
             return Ok(doctorResponses);
-        }
-
-        // GET: api/clinic/records/{userId}
-        // Lấy danh sách hồ sơ bệnh án của phòng khám theo UserID của nhân viên phòng khám
-        [HttpGet("records/{userId}")]
-        public async Task<IActionResult> GetRecordsByClinicStaffUser(int userId)
-        {
-            var (clinic, error) = await GetClinicFromUserId(userId);
-            if (error != null)
-                return error;
-
-            var records = await _dbContext.MedicalRecords
-                .Include(a => a.Patient)
-                .Include(a => a.Appointment)
-                .Include(a => a.Appointment!.Clinic)
-                .Where(a => a.Appointment!.ClinicID == clinic!.ClinicID)
-                .ToListAsync();
-
-            if (records.Count == 0)
-                return NotFound(new { message = "No records found for this clinic." });
-
-            return Ok(records);
         }
 
         // GET: api/appointment/services
@@ -322,10 +300,10 @@ namespace YouMedServer.Controllers
             return (clinic, null);
         }
 
-        // GET: api/clinic/user/{userId}/working-hours
+        // GET: api/clinic/working-hours
         // Lấy danh sách giờ làm việc của phòng khám theo UserID của nhân viên phòng khám
-        [HttpGet("user/{userId}/working-hours")]
-        public async Task<IActionResult> GetWorkingHours(int userId)
+        [HttpGet("working-hours")]
+        public async Task<IActionResult> GetWorkingHours([FromQuery] int userId)
         {
             var (clinic, error) = await GetClinicFromUserId(userId);
             if (error != null)
@@ -338,10 +316,10 @@ namespace YouMedServer.Controllers
             return Ok(workingHours);
         }
 
-        // PUT: api/clinic/user/{userId}/working-hours
+        // PUT: api/clinic/working-hours
         // Cập nhật giờ làm việc của phòng khám theo UserID của nhân viên phòng khám
-        [HttpPut("user/{userId}/working-hours")]
-        public async Task<IActionResult> UpdateWorkingHours(int userId, [FromBody] List<ClinicWorkingHourDTO> workingHoursDto)
+        [HttpPut("working-hours")]
+        public async Task<IActionResult> UpdateWorkingHours([FromQuery] int userId, [FromBody] List<ClinicWorkingHourDTO> workingHoursDto)
         {
             var (clinic, error) = await GetClinicFromUserId(userId);
             if (error != null)
@@ -367,40 +345,6 @@ namespace YouMedServer.Controllers
             await _dbContext.SaveChangesAsync();
 
             return Ok(new { message = "Working hours updated successfully!" });
-        }
-
-        // GET: api/clinic/by-user/{userId}/patients
-        // Lấy danh sách bệnh nhân theo phòng khám mà nhân viên (UserID) đang làm việc
-        [HttpGet("by-user/{userId}/patients")]
-        public async Task<IActionResult> GetPatientsByClinic(int userId)
-        {
-            var clinicStaff = await _dbContext.ClinicStaffs
-                .FirstOrDefaultAsync(s => s.UserID == userId);
-
-            if (clinicStaff == null)
-                return NotFound(new { message = "This user does not belong to any clinic." });
-
-            var hasClinic = await _dbContext.Clinics.AnyAsync(c => c.ClinicID == clinicStaff.ClinicID);
-            if (!hasClinic)
-                return NotFound(new { message = "Clinic not found." });
-
-            var patientIDs = await _dbContext.Appointments
-                .Where(a => a.ClinicID == clinicStaff.ClinicID)
-                .Select(a => a.PatientID)
-                .Distinct()
-                .ToListAsync();
-
-            if (patientIDs.Count == 0)
-                return NotFound(new { message = "No appointments found for this clinic." });
-
-            var patients = await _dbContext.Patients
-                .Where(p => patientIDs.Contains(p.PatientID) && !p.IsDeleted)
-                .ToListAsync();
-
-            if (patients.Count == 0)
-                return NotFound(new { message = "No patients found for this clinic." });
-
-            return Ok(patients);
         }
     }
 }

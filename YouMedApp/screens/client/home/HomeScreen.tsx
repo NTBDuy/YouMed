@@ -17,7 +17,7 @@ import {
 
 import { AuthContext } from 'contexts/AuthContext';
 import { HomeStackParamList } from '../../../types/StackParamList';
-import { fetchClinics, fetchClientUpcomingAppointments } from 'utils/apiUtils';
+import { fetchClinics, fetchAppointments } from 'utils/apiUtils';
 import { getUserInitials, isOpenNow } from 'utils/userHelpers';
 import { showTodayOrTomorrow } from 'utils/datetimeUtils';
 import { calculateDistance, getUserLocation, LocationData } from 'utils/locationUtils';
@@ -33,7 +33,7 @@ const HomeScreen = () => {
 
   const getUpcoming = async () => {
     try {
-      const res = await fetchClientUpcomingAppointments(user!.userID);
+      const res = await fetchAppointments(user!.userID, "Schedule");
       if (res.ok) {
         const data = await res.json();
         setUpcomingData(data);

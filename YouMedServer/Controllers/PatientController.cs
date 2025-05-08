@@ -30,6 +30,40 @@ namespace YouMedServer.Controllers
             return Ok(patients);
         }
 
+        // GET: api/patient/{PatientID}/records
+        // Lấy danh sách hồ sơ bệnh án theo PatientID
+        [HttpGet("{PatientID}/records")]
+        public async Task<IActionResult> GetRecordsByPatientID(int PatientID)
+        {
+            var records = await _dbContext.MedicalRecords
+                .Include(r => r.Patient)
+                .Include(r => r.Doctor)
+                .Include(r => r.Doctor!.User)
+                .Include(r => r.Appointment)
+                .Include(r => r.Appointment!.Clinic)
+                .Where(r => r.PatientID == PatientID)
+                .ToListAsync();
+
+            if (records.Count == 0)
+                return NotFound(new { message = "Record not found with patient id " + PatientID });
+
+            return Ok(records);
+        }
+
+        // GET: api/patient/{patientId}/insurances
+        // Lấy thông tin bảo hiểm y tế theo PatientID
+        [HttpGet("{patientId}/insurances")]
+        public async Task<IActionResult> GetInsuranceByPatinetID(int patientId)
+        {
+            var insurance = await _dbContext.HealthInsurances
+                .FirstOrDefaultAsync(i => i.PatientID == patientId);
+
+            if (insurance == null)
+                return NotFound(new { message = "Insurance not found." });
+
+            return Ok(insurance);
+        }
+
         // POST: api/patient
         // Thêm bệnh nhân mới vào hệ thống
         [HttpPost]

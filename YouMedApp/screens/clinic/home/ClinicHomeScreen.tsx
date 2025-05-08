@@ -19,7 +19,10 @@ import {
 
 import { AuthContext } from 'contexts/AuthContext';
 import { getUserInitials } from 'utils/userHelpers';
-import { fetchAppointmentsByClinic, fetchTodayClinicStats } from 'utils/apiUtils';
+import {
+  fetchAppointments,
+  fetchTodayClinicStats,
+} from 'utils/apiUtils';
 import Appointment from 'types/Appointment';
 
 const ClinicHomeScreen = () => {
@@ -47,10 +50,17 @@ const ClinicHomeScreen = () => {
 
   const getTodaysAppointments = async () => {
     try {
-      const res = await fetchAppointmentsByClinic(user!.userID, 'today');
+      const res = await fetchAppointments(user!.userID);
       if (res.ok) {
         const data = await res.json();
-        setTodaysAppointments(data);
+        const today = new Date().toISOString().split('T')[0];
+
+        const todaysAppointments = data.filter((appointment: any) => {
+          const appointmentDate = new Date(appointment.appointmentDate).toISOString().split('T')[0];
+          return appointmentDate === today;
+        });
+
+        setTodaysAppointments(todaysAppointments);
       }
     } catch (error) {
       console.error("Error fetching today's appointments:", error);
@@ -120,7 +130,7 @@ const ClinicHomeScreen = () => {
         <Pressable
           className="flex-row items-center"
           onPress={() => {
-            handlePress()
+            handlePress();
             // navigation.navigate('AppointmentSearch');
           }}>
           <FontAwesomeIcon icon={faMagnifyingGlass} size={16} color="#64748b" />
@@ -243,7 +253,7 @@ const ClinicHomeScreen = () => {
             <Pressable
               className="w-1/4 items-center"
               onPress={() => {
-                handlePress()
+                handlePress();
                 // navigation.navigate('AppointmentScheduler');
               }}>
               <View className="mb-2 h-16 w-16 items-center justify-center rounded-2xl bg-cyan-100">
@@ -274,7 +284,7 @@ const ClinicHomeScreen = () => {
             <Pressable
               className="w-1/4 items-center"
               onPress={() => {
-                handlePress()
+                handlePress();
                 // navigation.navigate('Analytics');
               }}>
               <View className="mb-2 h-16 w-16 items-center justify-center rounded-2xl bg-purple-100">

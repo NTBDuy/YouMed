@@ -40,26 +40,6 @@ export const fetchAppointmentDetail = async (appointmentId: number) => {
   return fetch(`${API_URL}/appointment/${appointmentId}`);
 };
 
-// Lấy danh sách tất cả lịch hẹn của người dùng theo UserID - CLIENT
-export const fetchClientAppointments = async (userId: number) => {
-  return fetch(`${API_URL}/appointment/user/${userId}`);
-};
-
-// Lấy danh sách lịch hẹn của bác sĩ theo UserID
-export const fetchDoctorAppointments = async (userId: number) => {
-  return fetch(`${API_URL}/appointment/doctor/${userId}`);
-};
-
-// Lấy danh sách lịch hẹn của phòng khám theo UserID của nhân viên, có thể lọc theo 'today' hoặc 'all'
-export const fetchAppointmentsByClinic = async (userId: number, filter: string) => {
-  return fetch(`${API_URL}/appointment/clinic/${userId}/appointments?filter=${filter}`);
-};
-
-// Lấy danh sách lịch hẹn sắp tới (Scheduled) của người dùng
-export const fetchClientUpcomingAppointments = async (userId: number) => {
-  return fetch(`${API_URL}/appointment/upcoming/${userId}`);
-};
-
 // Lấy hồ sơ bệnh án (Medical Record) liên quan đến lịch hẹn theo AppointmentID
 export const fetchAppointmentRecord = async (appointmentId: number) => {
   return fetch(`${API_URL}/appointment/${appointmentId}/record`);
@@ -76,8 +56,8 @@ export const createAppointment = async (data: any) => {
 };
 
 // Chỉ định khám lâm sàng
-export const requestService = async (data: any) => {
-  return submitData(`appointment/service`, 'POST', data);
+export const requestService = async (appointmentId: number, data: any) => {
+  return submitData(`appointment/${appointmentId}/service`, 'POST', data);
 };
 
 // Danh sách chỉ định khám lâm sàng
@@ -120,22 +100,22 @@ export const fetchClinicDetail = async (clinicId: number) => {
 
 // Lấy thông tin chi tiết của phòng khám mà nhân viên đang làm việc
 export const fetchClinicInformation = async (userId: number) => {
-  return fetch(`${API_URL}/clinic/information/${userId}`);
+  return fetch(`${API_URL}/clinic/information?userId=${userId}`);
 };
 
 // Lấy tổng quan số lượng lịch hẹn trong ngày của phòng khám theo UserID của nhân viên phòng khám
 export const fetchTodayClinicStats = async (userId: number) => {
-  return fetch(`${API_URL}/clinic/stats/${userId}`);
+  return fetch(`${API_URL}/clinic/stats?userId=${userId}`);
 };
 
 // Lấy danh sách tất cả phòng khám
 export const fetchClinics = async () => {
-  return fetch(`${API_URL}/clinic/list`);
+  return fetch(`${API_URL}/clinics`);
 };
 
 // Lấy danh sách bác sĩ theo UserID của nhân viên phòng khám -> Dùng để quản lý bác sĩ của phòng khám đó
 export const fetchDoctorsByClinic = async (userId: number) => {
-  return fetch(`${API_URL}/clinic/doctor/${userId}`);
+  return fetch(`${API_URL}/clinic/doctors?userId=${userId}`);
 };
 
 // Lấy danh sách bác sĩ của phòng khám bằng ClinicID -> Dùng để hiển thị danh sách bác sĩ lúc đặt lịch khám
@@ -143,14 +123,9 @@ export const fetchDoctorsByClinicID = async (clinicId: number) => {
   return fetch(`${API_URL}/clinic/${clinicId}/doctors`);
 };
 
-// Lấy danh sách hồ sơ bệnh án của phòng khám theo UserID của nhân viên phòng khám
-export const fetchRecordsByClinic = async (userId: number) => {
-  return fetch(`${API_URL}/clinic/records/${userId}`);
-};
-
 // Lấy danh sách các chuyên khoa (Specialties)
 export const fetchSpecialties = async () => {
-  return fetch(`${API_URL}/clinic/specialty`);
+  return fetch(`${API_URL}/clinic/specialties`);
 };
 
 // lấy danh sách dịch vụ khám cận lâm sàng của phòng khám
@@ -165,12 +140,12 @@ export const updateClinicInformation = async (data: any) => {
 
 // Lấy danh sách giờ làm việc của phòng khám theo ClinicID
 export const fetchWorkingHours = async (userId: number) => {
-  return fetch(`${API_URL}/clinic/user/${userId}/working-hours`);
+  return fetch(`${API_URL}/clinic/working-hours?userId=${userId}`);
 };
 
 // Cập nhật giờ làm việc của phòng khám
 export const updateWorkingHours = async (userId: number, data: any) => {
-  return submitData(`clinic/user/${userId}/working-hours`, 'PUT', data);
+  return submitData(`clinic/working-hours?userId=${userId}`, 'PUT', data);
 };
 
 /**
@@ -179,11 +154,6 @@ export const updateWorkingHours = async (userId: number, data: any) => {
 // Lấy thông tin chi tiết hồ sơ bệnh án bằng RecordID
 export const fetchRecordDetail = async (recordId: number) => {
   return fetch(`${API_URL}/record/${recordId}`);
-};
-
-// Lấy lịch sử hồ sơ bệnh án bằng PatientID
-export const fetchRecordsByPatient = async (patientId: number) => {
-  return fetch(`${API_URL}/record/patient/${patientId}`);
 };
 
 // Tạo hồ sơ bệnh án mới
@@ -209,7 +179,15 @@ export const fetchPatientDetail = async (patientId: number) => {
   return fetch(`${API_URL}/patient/${patientId}`);
 };
 
+// Lấy lịch sử hồ sơ bệnh án bằng PatientID
+export const fetchRecordsByPatient = async (patientId: number) => {
+  return fetch(`${API_URL}/patient/${patientId}/records`);
+};
 
+// Lấy thông tin bảo hiểm y tế bằng PatientID
+export const fetchInsuranceDetail = async (patientId: number) => {
+  return fetch(`${API_URL}/patient/${patientId}/insurances`);
+};
 
 // Thêm hồ sơ bệnh nhân mới vào hệ thống
 export const createPatient = async (data: any) => {
@@ -229,11 +207,6 @@ export const deletePatient = async (patientId: number) => {
 /**
  * HEALTH INSUARANCE API
  */
-// Lấy thông tin bảo hiểm y tế bằng PatientID
-export const fetchInsuranceDetail = async (patientId: number) => {
-  return fetch(`${API_URL}/insurance/${patientId}`);
-};
-
 // Thêm mới thông tin bảo hiểm y tế cho bệnh nhân
 export const createInsurance = async (data: any) => {
   return submitData(`insurance`, 'POST', data);
@@ -252,8 +225,6 @@ export const countUnread = (userId: number) => {
   return fetch(`${API_URL}/notification/count-unread?userId=${userId}`);
 };
 
-
-
 // Cập nhật trạng thái của một thông báo (Read/Unread) theo NotificationID
 export const updateStatus = async (notificationID: number, status: string) => {
   return submitData(`notification/${notificationID}?status=${status}`, 'PUT');
@@ -269,7 +240,7 @@ export const createNotification = async (data: any) => {
  */
 // Lấy thông tin bác sĩ dựa theo UserID
 export const fetchDoctorByUserID = async (userId: number) => {
-  return fetch(`${API_URL}/doctor/by-user/${userId}`);
+  return fetch(`${API_URL}/doctor?userId=${userId}`);
 };
 
 // Lấy chi tiết thông tin bác sĩ theo DoctorID (bao gồm User và chuyên khoa)
@@ -279,22 +250,17 @@ export const fetchDoctorDetail = async (doctorID: number) => {
 
 // Lấy tổng quan số lượng lịch hẹn trong ngày của bác sĩ theo UserID
 export const fetchTodayDoctorStats = async (userId: number) => {
-  return fetch(`${API_URL}/doctor/by-user/${userId}/stats`);
-};
-
-// Lấy danh sách hồ sơ bệnh án mà bác sĩ đã tạo
-export const fetchRecordsByDoctor = async (userId: number) => {
-  return fetch(`${API_URL}/doctor/by-user/${userId}/records`);
+  return fetch(`${API_URL}/doctor/stats?userId=${userId}`);
 };
 
 // Lấy danh sách lịch hẹn của bác sĩ theo trạng thái (Scheduled, Completed, Cancelled)
 export const fetchAppointmentsByDoctor = async (userId: number, status: string) => {
-  return fetch(`${API_URL}/doctor/by-user/${userId}/appointment?status=${status}`);
+  return fetch(`${API_URL}/doctor/appointments?userId=${userId}&status=${status}`);
 };
 
 // Tạo mới bác sĩ bởi nhân viên phòng khám (ClinicStaff)
 export const createDoctor = async (data: any, userId: number) => {
-  return submitData(`doctor/by-user/${userId}}`, 'POST', data);
+  return submitData(`doctor?userId=${userId}`, 'POST', data);
 };
 
 // Cập nhật thông tin bác sĩ (User + giới thiệu + kinh nghiệm)
@@ -307,16 +273,28 @@ export const deleteDoctor = async (doctorID: number) => {
   return submitData(`doctor/${doctorID}`, 'DELETE');
 };
 
-
 /**
  * USER API
  */
-// Lấy danh sách bệnh nhân
+// Lấy danh sách bệnh nhân theo UserID
 export const fetchPatients = async (userId: number) => {
   return fetch(`${API_URL}/user/${userId}/patients`);
-}
+};
 
 // Lấy danh sách thông báo của người dùng theo UserID, sắp xếp mới nhất trước
 export const fetchNotifications = async (userId: number) => {
   return fetch(`${API_URL}/user/${userId}/notifications`);
+};
+
+// Lấy danh sách hồ sơ bệnh án theo UserID
+export const fetchRecords = async (userId: number) => {
+  return fetch(`${API_URL}/user/${userId}/records`);
+};
+
+// Lấy danh sách tất cả lịch hẹn của người dùng theo UserID -
+export const fetchAppointments = async (userId: number, status?: string) => {
+  const url = status
+    ? `${API_URL}/user/${userId}/appointments?status=${status}`
+    : `${API_URL}/user/${userId}/appointments`;
+  return fetch(url);
 };

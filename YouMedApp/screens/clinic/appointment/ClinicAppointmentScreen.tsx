@@ -23,7 +23,7 @@ import {
 import { useCallback, useContext, useState } from 'react';
 import { AuthContext } from 'contexts/AuthContext';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { fetchAppointmentsByClinic } from 'utils/apiUtils';
+import { fetchAppointments } from 'utils/apiUtils';
 import { TabView, TabBar } from 'react-native-tab-view';
 import HeaderSection from 'components/HeaderSection';
 import { formatLocaleDateTime } from 'utils/datetimeUtils';
@@ -65,8 +65,9 @@ const ClinicAppointmentScreen = () => {
   const fetchData = async () => {
     try {
       if (!user) return;
-      const response = await fetchAppointmentsByClinic(user.userID, 'all');
+      const response = await fetchAppointments(user.userID)
       if (response.ok) {
+        console.log("DATA OK NHA")
         const resp = await response.json();
         console.log('Fetched clinic appointments data:', resp);
 

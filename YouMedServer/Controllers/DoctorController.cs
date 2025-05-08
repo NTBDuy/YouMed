@@ -21,10 +21,10 @@ namespace YouMedServer.Controllers
             _passwordHasher = new PasswordHasher<User>();
         }
 
-        // GET: api/doctor/by-user/{userId}
+        // GET: api/doctor
         // Lấy thông tin bác sĩ dựa theo UserID
-        [HttpGet("by-user/{userId}")]
-        public async Task<IActionResult> GetDoctorByUserID(int userId)
+        [HttpGet]
+        public async Task<IActionResult> GetDoctorByUserID([FromQuery] int userId)
         {
             var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
             if (doctor == null)
@@ -33,10 +33,10 @@ namespace YouMedServer.Controllers
             return Ok(doctor);
         }
 
-        // GET: api/doctor/by-user/{userId}/stats
+        // GET: api/doctor/stats
         // Lấy tổng quan số lượng lịch hẹn trong ngày của bác sĩ theo UserID
-        [HttpGet("by-user/{userId}/stats")]
-        public async Task<IActionResult> GetDoctorStatsForToday(int userId)
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetDoctorStatsForToday([FromQuery] int userId)
         {
             var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
             if (doctor == null)
@@ -59,32 +59,10 @@ namespace YouMedServer.Controllers
             return Ok(data);
         }
 
-        // GET: api/doctor/by-user/{userId}/records
-        // Lấy danh sách hồ sơ bệnh án mà bác sĩ đã tạo
-        [HttpGet("by-user/{userId}/records")]
-        public async Task<IActionResult> GetRecordsByDoctor(int userId)
-        {
-            var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
-            if (doctor == null)
-                return NotFound(new { message = "Doctor not found." });
-
-            var records = await _dbContext.MedicalRecords
-                .Include(a => a.Patient)
-                .Include(a => a.Appointment)
-                .Include(a => a.Appointment!.Clinic)
-                .Where(a => a.DoctorID == doctor.DoctorID)
-                .ToListAsync();
-
-            if (records == null)
-                return NotFound(new { message = "No records found for this doctor." });
-
-            return Ok(records);
-        }
-
-        // GET: api/doctor/by-user/{userId}/appointment?status={status}
+        // GET: api/doctor/appointment?userId={userId}?status={status}
         // Lấy danh sách lịch hẹn của bác sĩ theo trạng thái (Scheduled, Completed, Cancelled)
-        [HttpGet("by-user/{userId}/appointment")]
-        public async Task<IActionResult> GetUpcomingAppointment(int userId, [FromQuery] string status)
+        [HttpGet("appointments")]
+        public async Task<IActionResult> GetUpcomingAppointment([FromQuery] int userId, [FromQuery] string status)
         {
             var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
             if (doctor == null)
@@ -101,10 +79,10 @@ namespace YouMedServer.Controllers
             return Ok(appointments);
         }
 
-        // GET: api/doctor/by-user/{userId}/schedule
+        // GET: api/doctor/schedule
         // Lấy lịch làm việc của bác sĩ
-        [HttpGet("by-user/{userId}/schedule")]
-        public async Task<IActionResult> GetDoctorSchedule(int userId)
+        [HttpGet("schedule")]
+        public async Task<IActionResult> GetDoctorSchedule([FromQuery] int userId)
         {
             var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
             if (doctor == null)
@@ -117,10 +95,10 @@ namespace YouMedServer.Controllers
             return Ok(schedules);
         }
 
-        // POST: api/doctor/by-user/{userId}
+        // POST: api/doctor
         // Tạo mới bác sĩ bởi nhân viên phòng khám (ClinicStaff)
-        [HttpPost("by-user/{userId}")]
-        public async Task<IActionResult> CreateNewDoctorByClinicStaff([FromBody] DoctorDTO dto, int userId)
+        [HttpPost]
+        public async Task<IActionResult> CreateNewDoctorByClinicStaff([FromBody] DoctorDTO dto, [FromQuery] int userId)
         {
             if (await _dbContext.Users.AnyAsync(u => u.PhoneNumber == dto.PhoneNumber))
                 return BadRequest(new { message = "Phone number already exists." });

@@ -11,7 +11,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { fetchRecordsByDoctor } from 'utils/apiUtils';
+import { fetchRecords } from 'utils/apiUtils';
 import { Ionicons } from '@expo/vector-icons';
 import { formatDate } from 'utils/datetimeUtils';
 import MedicalRecord from 'types/MedicalRecord';
@@ -28,7 +28,7 @@ const DoctorMedicalRecordScreen = () => {
   const getRecords = async () => {
     setLoading(true);
     try {
-      const res = await fetchRecordsByDoctor(user!.userID);
+      const res = await fetchRecords(user!.userID);
       if (res.ok) {
         const data = await res.json();
         console.log('TEST - GET PATIENTS: ', data);

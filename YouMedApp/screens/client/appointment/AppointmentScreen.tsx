@@ -14,7 +14,7 @@ import {
 import { useCallback, useContext, useState } from 'react';
 import { AuthContext } from 'contexts/AuthContext';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { fetchClientAppointments } from 'utils/apiUtils';
+import { fetchAppointments } from 'utils/apiUtils';
 import { TabView, TabBar } from 'react-native-tab-view';
 import HeaderSection from 'components/HeaderSection';
 import { formatLocaleDateTime } from 'utils/datetimeUtils';
@@ -57,7 +57,7 @@ const AppointmentScreen = () => {
       }
       setIsLoading(true);
 
-      const response = await fetchClientAppointments(user.userID);
+      const response = await fetchAppointments(user.userID);
 
       if (response.ok) {
         const resp = await response.json();

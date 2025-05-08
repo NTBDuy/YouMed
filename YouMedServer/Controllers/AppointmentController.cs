@@ -16,17 +16,17 @@ namespace YouMedServer.Controllers
             _dbContext = context;
         }
 
-        // GET: api/appointment/{id}
+        // GET: api/appointment/{appointmentId}
         // Lấy chi tiết lịch hẹn theo AppointmentID
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Appointment>> GetAppointment(int id)
+        [HttpGet("{appointmentId}")]
+        public async Task<ActionResult<Appointment>> GetAppointment(int appointmentId)
         {
             var appointment = await _dbContext.Appointments
                 .Include(a => a.Patient)
                 .Include(a => a.Clinic)
                 .Include(a => a.Doctor)
                 .Include(a => a.Doctor!.User)
-                .FirstOrDefaultAsync(a => a.AppointmentID == id);
+                .FirstOrDefaultAsync(a => a.AppointmentID == appointmentId);
 
             if (appointment == null)
             {
@@ -38,109 +38,72 @@ namespace YouMedServer.Controllers
 
         // GET: api/appointment/user/{userId}
         // Lấy danh sách tất cả lịch hẹn của người dùng theo UserID
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetAppointmentsByUserId(int userId)
-        {
-            var hasAppointments = await _dbContext.Appointments
-                .AnyAsync(a => a.Patient!.UserID == userId);
+        // [HttpGet("user/{userId}")]
+        // public async Task<IActionResult> GetAppointmentsByUserId(int userId)
+        // {
+        //     var hasAppointments = await _dbContext.Appointments
+        //         .AnyAsync(a => a.Patient!.UserID == userId);
 
-            if (!hasAppointments)
-            {
-                return NotFound(new { message = $"No appointments found for user ID {userId}." });
-            }
+        //     if (!hasAppointments)
+        //     {
+        //         return NotFound(new { message = $"No appointments found for user ID {userId}." });
+        //     }
 
-            var appointments = await _dbContext.Appointments
-                .Where(a => a.Patient!.UserID == userId)
-                .Include(a => a.Clinic)
-                .Include(a => a.Patient)
-                .Include(a => a.Doctor)
-                .Include(a => a.Doctor!.User)
-                .ToListAsync();
+        //     var appointments = await _dbContext.Appointments
+        //         .Where(a => a.Patient!.UserID == userId)
+        //         .Include(a => a.Clinic)
+        //         .Include(a => a.Patient)
+        //         .Include(a => a.Doctor)
+        //         .Include(a => a.Doctor!.User)
+        //         .ToListAsync();
 
-            return Ok(appointments);
-        }
+        //     return Ok(appointments);
+        // }
 
         // GET: api/appointment/upcoming/{userId}
         // Lấy danh sách lịch hẹn sắp tới (Scheduled) của người dùng
-        [HttpGet("upcoming/{userId}")]
-        public async Task<IActionResult> GetUpcomingAppointmentsForUser(int userId)
-        {
-            var patients = await _dbContext.Patients
-                .Where(p => p.UserID == userId && !p.IsDeleted)
-                .ToListAsync();
+        // [HttpGet("upcoming/{userId}")]
+        // public async Task<IActionResult> GetUpcomingAppointmentsForUser(int userId)
+        // {
+        //     var patients = await _dbContext.Patients
+        //         .Where(p => p.UserID == userId && !p.IsDeleted)
+        //         .ToListAsync();
 
-            if (!patients.Any())
-            {
-                return NotFound(new { message = "No patients found for this UserID." });
-            }
+        //     if (!patients.Any())
+        //     {
+        //         return NotFound(new { message = "No patients found for this UserID." });
+        //     }
 
-            var appointments = await _dbContext.Appointments
-                .Where(a => patients.Select(p => p.PatientID).Contains(a.PatientID) && a.Status == "Scheduled")
-                .Include(a => a.Clinic)
-                .Include(a => a.Doctor)
-                .Include(a => a.Doctor!.User)
-                .ToListAsync();
+        //     var appointments = await _dbContext.Appointments
+        //         .Where(a => patients.Select(p => p.PatientID).Contains(a.PatientID) && a.Status == "Scheduled")
+        //         .Include(a => a.Clinic)
+        //         .Include(a => a.Doctor)
+        //         .Include(a => a.Doctor!.User)
+        //         .ToListAsync();
 
-            return Ok(appointments);
-        }
+        //     return Ok(appointments);
+        // }
 
         // GET: api/appointment/doctor/{userId}
         // Lấy danh sách lịch hẹn của bác sĩ theo UserID
-        [HttpGet("doctor/{userId}")]
-        public async Task<IActionResult> GetAppointmentsForDoctor(int userId)
-        {
-            var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
+        // [HttpGet("doctor/{userId}")]
+        // public async Task<IActionResult> GetAppointmentsForDoctor(int userId)
+        // {
+        //     var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
 
-            if (doctor == null)
-                return NotFound(new { message = "No doctor found for this userId." });
+        //     if (doctor == null)
+        //         return NotFound(new { message = "No doctor found for this userId." });
 
-            var appointment = await _dbContext.Appointments
-                .Where(a => a.DoctorID == doctor.DoctorID)
-                .Include(a => a.Patient)
-                .Include(a => a.Clinic)
-                .Include(a => a.Doctor!.User)
-                .ToListAsync();
+        //     var appointment = await _dbContext.Appointments
+        //         .Where(a => a.DoctorID == doctor.DoctorID)
+        //         .Include(a => a.Patient)
+        //         .Include(a => a.Clinic)
+        //         .Include(a => a.Doctor!.User)
+        //         .ToListAsync();
 
-            return Ok(appointment);
-        }
+        //     return Ok(appointment);
+        // }
 
-        // GET: api/appointment/clinic/{userId}/appointments?filter={filter}
-        // Lấy danh sách lịch hẹn của phòng khám theo UserID của nhân viên, có thể lọc theo 'today' hoặc 'all'
-        [HttpGet("clinic/{userId}/appointments")]
-        public async Task<IActionResult> GetAppointmentsByStaff(int userId, [FromQuery] string filter = "all")
-        {
-            var clinicStaff = await _dbContext.ClinicStaffs
-                .FirstOrDefaultAsync(s => s.UserID == userId);
-
-            if (clinicStaff == null)
-            {
-                return NotFound(new { message = $"No clinic staff found for user ID {userId}." });
-            }
-
-            var appointmentsQuery = _dbContext.Appointments
-                .Where(a => a.ClinicID == clinicStaff.ClinicID);
-
-            switch (filter.ToLower())
-            {
-                case "today":
-                    var today = DateTime.Today;
-                    appointmentsQuery = appointmentsQuery.Where(a => a.AppointmentDate.Date == today);
-                    break;
-                case "all":
-                    break;
-                default:
-                    return BadRequest(new { message = $"Filter '{filter}' is not supported. Valid options: 'all', 'today'." });
-            }
-
-            var appointments = await appointmentsQuery
-                .Include(a => a.Patient)
-                .Include(a => a.Clinic)
-                .Include(a => a.Doctor)
-                .ThenInclude(d => d!.User)
-                .ToListAsync();
-
-            return Ok(appointments);
-        }
 
         // GET: api/appointment/{appointmentId}/record
         // Lấy hồ sơ bệnh án (Medical Record) liên quan đến lịch hẹn theo AppointmentID
@@ -214,12 +177,12 @@ namespace YouMedServer.Controllers
             return Ok(new { message = "Appointment booked successfully." });
         }
 
-        // POST: api/appointment/service
+        // POST: api/appointment/{appointmentId}/service
         // Chỉ định khám cận lâm sàng
-        [HttpPost("service")]
-        public async Task<IActionResult> RequestService([FromBody] ServiceDTO dto)
+        [HttpPost("{appointmentId}/service")]
+        public async Task<IActionResult> RequestService(int appointmentId, [FromBody] ServiceDTO dto)
         {
-            var appointment = await _dbContext.Appointments.FindAsync(dto.AppointmentID);
+            var appointment = await _dbContext.Appointments.FindAsync(appointmentId);
             if (appointment == null)
                 return NotFound(new { message = "Appointment not found!" });
 

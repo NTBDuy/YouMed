@@ -41,26 +41,6 @@ namespace YouMedServer.Controllers
             return Ok(record);
         }
 
-        // GET: api/record/patient/{PatientID}
-        // Lấy danh sách hồ sơ bệnh án theo PatientID
-        [HttpGet("patient/{PatientID}")]
-        public async Task<IActionResult> GetRecordsByPatientID(int PatientID)
-        {
-            var records = await _dbContext.MedicalRecords
-                .Include(r => r.Patient)
-                .Include(r => r.Doctor)
-                .Include(r => r.Doctor!.User)
-                .Include(r => r.Appointment)
-                .Include(r => r.Appointment!.Clinic)
-                .Where(r => r.PatientID == PatientID)
-                .ToListAsync();
-
-            if (records.Count == 0)
-                return NotFound(new { message = "Record not found with patient id " + PatientID });
-
-            return Ok(records);
-        }
-
         // GET: api/record/{recordId}/paraclinical
         // Lấy danh sách kết quả dịch vụ cận lâm sàng theo RecordID
         [HttpGet("{recordId}/paraclinical")]

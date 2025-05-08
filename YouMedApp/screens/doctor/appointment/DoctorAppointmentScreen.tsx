@@ -19,9 +19,10 @@ import { AuthContext } from 'contexts/AuthContext';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import HeaderSection from 'components/HeaderSection';
-import { fetchDoctorAppointments } from 'utils/apiUtils';
+
 import { formatLocaleDateTime } from 'utils/datetimeUtils';
 import Appointment from 'types/Appointment';
+import { fetchAppointments } from 'utils/apiUtils';
 
 // Define sort types
 const SORT_OPTIONS = {
@@ -62,7 +63,7 @@ const DoctorAppointmentScreen = () => {
       if (!user) return;
       setIsLoading(true);
       
-      const response = await fetchDoctorAppointments(user.userID);
+      const response = await fetchAppointments(user.userID);
       if (response.ok) {
         const resp = await response.json();
         const today = new Date();

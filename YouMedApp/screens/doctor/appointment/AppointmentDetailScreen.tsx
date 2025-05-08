@@ -260,7 +260,7 @@ const AppointmentDetailScreen = () => {
           note: s.note,
         })),
       };
-      const res = await requestService(reqData);
+      const res = await requestService(appointmentID, reqData);
       if (res.ok) {
         Alert.alert('Success', 'Request sent');
         getServiceList(appointmentID);

@@ -16,20 +16,6 @@ namespace YouMedServer.Controllers
             _dbContext = dbContext;
         }
 
-        // GET: api/insurance/{patientId}
-        // Lấy thông tin bảo hiểm y tế theo PatientID
-        [HttpGet("{patientId}")]
-        public async Task<IActionResult> GetInsuranceByPatinetID(int patientId)
-        {
-            var insurance = await _dbContext.HealthInsurances
-                .FirstOrDefaultAsync(i => i.PatientID == patientId);
-
-            if (insurance == null)
-                return NotFound(new { message = "Insurance not found." });
-
-            return Ok(insurance);
-        }
-
         // POST: api/insurance
         // Thêm mới thông tin bảo hiểm y tế cho bệnh nhân
         [HttpPost]
