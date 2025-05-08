@@ -18,7 +18,7 @@ import {
 import { AuthContext } from 'contexts/AuthContext';
 import { DoctorStackParamList } from '../../../types/StackParamList';
 import { getGenderText, getUserInitials } from 'utils/userHelpers';
-import { fetchDoctorPatients, fetchAppointmentsByDoctor, fetchTodayDoctorStats } from 'utils/apiUtils';
+import {  fetchAppointmentsByDoctor, fetchPatients, fetchTodayDoctorStats } from 'utils/apiUtils';
 import { formatLocaleDateTime, showTodayOrTomorrow } from 'utils/datetimeUtils';
 import Appointment from 'types/Appointment';
 import Patient from 'types/Patient';
@@ -74,7 +74,8 @@ const DoctorHomeScreen = () => {
 
   const getRecentPatients = async () => {
     try {
-      const response = await fetchDoctorPatients(user!.userID);
+      const response = await fetchPatients(user!.userID);
+      // const response = await fetchDoctorPatients(user!.userID);
       if (response.ok) {
         const data = await response.json();
 

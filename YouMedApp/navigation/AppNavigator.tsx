@@ -22,11 +22,11 @@ export default function AppContent() {
           <RootStack.Screen name="LoggedIn">
             {() => (
               <NotificationProvider userID={user.userID}>
-                {user.role === 'Client' ? (
+                {user.role === 0 ? (
                   <ClientNavigator setIsLoggedIn={setIsLoggedIn} />
-                ) : user.role === 'Doctor' ? (
+                ) : user.role === 1 ? (
                   <DoctorNavigator setIsLoggedIn={setIsLoggedIn} />
-                ) : user.role === 'Clinic' ? (
+                ) : user.role === 2 ? (
                   <ClinicNavigator setIsLoggedIn={setIsLoggedIn} />
                 ) : null}
               </NotificationProvider>

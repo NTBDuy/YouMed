@@ -24,8 +24,8 @@ const RecordDetailScreen = () => {
   const [selectedResult, setSelectedResult] = useState<AppointmentClinicalServices | undefined>();
   const [showResultModal, setShowResultModal] = useState(false);
 
-  const isDoctor = user?.role === 'Doctor';
-  const isPatient = user?.role === 'Client';
+  const isDoctor = user?.role === 2;
+  const isPatient = user?.role === 1;
 
   const fetchRecordByID = async (id: number) => {
     try {

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using YouMedServer.Models.Entities;
 using YouMedServer.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
+using static YouMedServer.Models.Entities.User;
 
 namespace YouMedServer.Controllers
 {
@@ -32,47 +33,9 @@ namespace YouMedServer.Controllers
             return Ok(doctor);
         }
 
-        // GET: api/doctor/detail/{doctorId}
-        // Lấy chi tiết thông tin bác sĩ theo DoctorID (bao gồm User và chuyên khoa)
-        [HttpGet("detail/{doctorId}")]
-        public async Task<IActionResult> GetDoctorDetailByID(int doctorId)
-        {
-            var doctor = await _dbContext.Doctors
-                .Include(d => d.User)
-                .FirstOrDefaultAsync(d => d.DoctorID == doctorId);
-
-            if (doctor == null)
-                return NotFound(new { message = "Doctor not found." });
-
-
-            var specialties = await _dbContext.DoctorSpecialties
-                    .Where(cs => cs.DoctorID == doctor.DoctorID)
-                    .Include(cs => cs.Specialty)
-                    .Select(cs => new SpecialtyDto
-                    {
-                        SpecialtyID = cs.Specialty!.SpecialtyID,
-                        Name = cs.Specialty.Name
-                    })
-                    .ToListAsync();
-
-            var doctorResponse = new DoctorResponseDTO
-            {
-                DoctorID = doctor.DoctorID,
-                Introduction = doctor.Introduction,
-                Experience = doctor.Experience,
-                UserID = doctor.UserID,
-                User = doctor.User,
-                ClinicID = doctor.ClinicID,
-                Clinic = doctor.Clinic,
-                Specialties = specialties
-            };
-
-            return Ok(doctorResponse);
-        }
-
-        // GET: api/doctor/stats/{userId}
+        // GET: api/doctor/by-user/{userId}/stats
         // Lấy tổng quan số lượng lịch hẹn trong ngày của bác sĩ theo UserID
-        [HttpGet("stats/{userId}")]
+        [HttpGet("by-user/{userId}/stats")]
         public async Task<IActionResult> GetDoctorStatsForToday(int userId)
         {
             var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
@@ -96,9 +59,9 @@ namespace YouMedServer.Controllers
             return Ok(data);
         }
 
-        // GET: api/doctor/records/{userId}
+        // GET: api/doctor/by-user/{userId}/records
         // Lấy danh sách hồ sơ bệnh án mà bác sĩ đã tạo
-        [HttpGet("records/{userId}")]
+        [HttpGet("by-user/{userId}/records")]
         public async Task<IActionResult> GetRecordsByDoctor(int userId)
         {
             var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
@@ -118,9 +81,9 @@ namespace YouMedServer.Controllers
             return Ok(records);
         }
 
-        // GET: api/doctor/appointment/{userId}?status={status}
+        // GET: api/doctor/by-user/{userId}/appointment?status={status}
         // Lấy danh sách lịch hẹn của bác sĩ theo trạng thái (Scheduled, Completed, Cancelled)
-        [HttpGet("appointment/{userId}")]
+        [HttpGet("by-user/{userId}/appointment")]
         public async Task<IActionResult> GetUpcomingAppointment(int userId, [FromQuery] string status)
         {
             var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
@@ -138,9 +101,25 @@ namespace YouMedServer.Controllers
             return Ok(appointments);
         }
 
-        // POST: api/doctor/{userId}
+        // GET: api/doctor/by-user/{userId}/schedule
+        // Lấy lịch làm việc của bác sĩ
+        [HttpGet("by-user/{userId}/schedule")]
+        public async Task<IActionResult> GetDoctorSchedule(int userId)
+        {
+            var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
+            if (doctor == null)
+                return NotFound(new { message = "Doctor not found." });
+
+            var schedules = await _dbContext.DoctorSchedules
+                .Where(s => s.DoctorID == doctor.DoctorID)
+                .ToListAsync();
+
+            return Ok(schedules);
+        }
+
+        // POST: api/doctor/by-user/{userId}
         // Tạo mới bác sĩ bởi nhân viên phòng khám (ClinicStaff)
-        [HttpPost("{userId}")]
+        [HttpPost("by-user/{userId}")]
         public async Task<IActionResult> CreateNewDoctorByClinicStaff([FromBody] DoctorDTO dto, int userId)
         {
             if (await _dbContext.Users.AnyAsync(u => u.PhoneNumber == dto.PhoneNumber))
@@ -167,7 +146,8 @@ namespace YouMedServer.Controllers
                 Email = dto.Email,
                 Fullname = dto.FullName,
                 PasswordHash = _passwordHasher.HashPassword(null!, "P@ssword123"),
-                Role = "Doctor",
+                // Role = "Doctor",
+                Role = UserRole.Doctor,
                 CreatedAt = DateTime.Now
             };
 
@@ -202,6 +182,45 @@ namespace YouMedServer.Controllers
             }
             await _dbContext.SaveChangesAsync();
             return Ok(new { message = "Doctor created successfully." });
+        }
+
+
+        // GET: api/doctor/{doctorId}/detail
+        // Lấy chi tiết thông tin bác sĩ theo DoctorID (bao gồm User và chuyên khoa)
+        [HttpGet("{doctorId}/detail")]
+        public async Task<IActionResult> GetDoctorDetailByID(int doctorId)
+        {
+            var doctor = await _dbContext.Doctors
+                .Include(d => d.User)
+                .FirstOrDefaultAsync(d => d.DoctorID == doctorId);
+
+            if (doctor == null)
+                return NotFound(new { message = "Doctor not found." });
+
+
+            var specialties = await _dbContext.DoctorSpecialties
+                    .Where(cs => cs.DoctorID == doctor.DoctorID)
+                    .Include(cs => cs.Specialty)
+                    .Select(cs => new SpecialtyDto
+                    {
+                        SpecialtyID = cs.Specialty!.SpecialtyID,
+                        Name = cs.Specialty.Name
+                    })
+                    .ToListAsync();
+
+            var doctorResponse = new DoctorResponseDTO
+            {
+                DoctorID = doctor.DoctorID,
+                Introduction = doctor.Introduction,
+                Experience = doctor.Experience,
+                UserID = doctor.UserID,
+                User = doctor.User,
+                ClinicID = doctor.ClinicID,
+                Clinic = doctor.Clinic,
+                Specialties = specialties
+            };
+
+            return Ok(doctorResponse);
         }
 
         // PUT: api/doctor/{doctorId}

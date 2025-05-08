@@ -1,7 +1,7 @@
 import { FlatList, Pressable, SafeAreaView, Text, View } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useCallback, useContext, useState } from 'react';
-import { fetchClientPatients } from 'utils/apiUtils';
+import { fetchPatients } from 'utils/apiUtils';
 import { AuthContext } from 'contexts/AuthContext';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -18,7 +18,7 @@ const PatientScreen = () => {
   const fetchData = async () => {
     try {
       if (user) {
-        const res = await fetchClientPatients(user.userID);
+        const res = await fetchPatients(user!.userID);
         if (res.ok) {
           const data = await res.json();
           setPatients(data);

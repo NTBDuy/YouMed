@@ -1,12 +1,13 @@
 import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getBackgroundColor } from 'utils/colorUtils';
+import AppointmentClinicalServices from 'types/AppointmentClinicalServices';
 
 type TestResultModalProps = {
   visible: boolean;
   onClose: () => void;
   result?: AppointmentClinicalServices
-  userRole?: string;
+  userRole?: number;
 };
 
 const TestResultModal = ({ visible, onClose, result, userRole } : TestResultModalProps) => {

@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { AuthContext } from 'contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
-import { createAppointment, fetchDoctorsByClinicID, fetchClientPatients } from 'utils/apiUtils';
+import { createAppointment, fetchDoctorsByClinicID, fetchPatients } from 'utils/apiUtils';
 import { useNotification } from 'contexts/NotificationContext';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUserDoctor, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -73,10 +73,10 @@ const BookingScreen = () => {
     }
   };
 
-  const fetchPatients = async () => {
+  const getPatients = async () => {
     try {
       setIsFetchingPatients(true);
-      const res = await fetchClientPatients(user!.userID);
+      const res = await fetchPatients(user!.userID);
       if (res.ok) {
         const data = await res.json();
         console.log('Fetched patient data:', data);
@@ -150,7 +150,7 @@ const BookingScreen = () => {
   useFocusEffect(
     useCallback(() => {
       fetchDoctors();
-      fetchPatients();
+      getPatients();
     }, [])
   );
 

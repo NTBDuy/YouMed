@@ -16,27 +16,6 @@ namespace YouMedServer.Controllers
             _dbContext = context;
         }
 
-        // GET: api/notification/{userId}
-        // Lấy danh sách thông báo của người dùng theo UserID, sắp xếp mới nhất trước
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetNotificationByUserID(int userId)
-        {
-            if (userId <= 0)
-            {
-                return BadRequest(new { message = "Invalid user ID" });
-            }
-
-            var notifications = await _dbContext.Notifications
-                .Where(n => n.UserID == userId)
-                .OrderByDescending(n => n.CreatedAt)
-                .ToListAsync();
-
-            if (notifications.Count == 0)
-                return NotFound(new { message = "No notifications found for the specified user." });
-
-            return Ok(notifications);
-        }
-
         // GET: api/notification/count-unread?userId={userId}
         // Đếm số lượng thông báo chưa đọc của người dùng
         [HttpGet("count-unread")]

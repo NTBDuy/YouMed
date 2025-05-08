@@ -1,23 +1,23 @@
-export const getIconColor = (role?: string) => {
+export const getIconColor = (role?: number) => {
     switch (role) {
-      case 'Client':
+      case 0:
         return '#2563eb';
-      case 'Doctor':
+      case 1:
         return '#059669';
-      case 'Clinic':
+      case 2:
         return '#0891b2';
       default:
         return '#0F766E';
     }
   };
   
-  export const getBackgroundColor = (role?: string) => {
+  export const getBackgroundColor = (role?: number) => {
     switch (role) {
-      case 'Client':
+      case 0:
         return 'blue';
-      case 'Doctor':
+      case 1:
         return 'emerald';
-      case 'Clinic':
+      case 2:
         return 'cyan';
       default:
         return 'teal';

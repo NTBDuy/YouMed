@@ -8,11 +8,11 @@ import DoctorHomeScreen from 'screens/doctor/home/DoctorHomeScreen';
 import DoctorProfileScreen from 'screens/doctor/profile/DoctorProfileScreen';
 import DoctorAppointmentScreen from 'screens/doctor/appointment/DoctorAppointmentScreen';
 import AppointmentDetailScreen from 'screens/doctor/appointment/AppointmentDetailScreen';
-import RescheduleAppointmentScreen from 'screens/doctor/RescheduleAppointmentScreen';
-import NotificationScreen from 'screens/NotificationScreen';
+
+import NotificationScreen from 'screens/shared/NotificationScreen';
 import UpdateDoctorInformationScreen from 'screens/doctor/profile/UpdateDoctorInformationScreen';
-import MedicalHistoryScreen from 'screens/MedicalHistoryScreen';
-import RecordDetailScreen from 'screens/RecordDetailScreen';
+import MedicalHistoryScreen from 'screens/shared/MedicalHistoryScreen';
+import RecordDetailScreen from 'screens/shared/RecordDetailScreen';
 import DoctorPatientScreen from 'screens/doctor/home/DoctorPatientScreen';
 import DoctorMedicalRecordScreen from 'screens/doctor/home/DoctorMedicalRecordScreen';
 import DoctorPatientDetailScreen from 'screens/doctor/home/DoctorPatientDetailScreen';
@@ -43,10 +43,6 @@ function AppointmentStackScreen() {
     <AppointmentStack.Navigator screenOptions={{ headerShown: false }}>
       <AppointmentStack.Screen name="Appointments" component={DoctorAppointmentScreen} />
       <AppointmentStack.Screen name="AppointmentDetail" component={AppointmentDetailScreen} />
-      <AppointmentStack.Screen
-        name="RescheduleAppointment"
-        component={RescheduleAppointmentScreen}
-      />
       <AppointmentStack.Screen name="PatientMedicalHistory" component={MedicalHistoryScreen} />
       <AppointmentStack.Screen name="RecordDetail" component={RecordDetailScreen} />
       </AppointmentStack.Navigator>

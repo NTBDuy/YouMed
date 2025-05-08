@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using YouMedServer.Models.Entities;
 using YouMedServer.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
+using static YouMedServer.Models.Entities.User;
 
 namespace YouMedServer.Controllers
 {
@@ -44,7 +45,8 @@ namespace YouMedServer.Controllers
                 Email = dto.Email,
                 Fullname = dto.Fullname,
                 PasswordHash = _passwordHasher.HashPassword(null!, dto.Password),
-                Role = "Client",
+                // Role = "Client",
+                Role = UserRole.Client,
                 CreatedAt = DateTime.Now
             };
 

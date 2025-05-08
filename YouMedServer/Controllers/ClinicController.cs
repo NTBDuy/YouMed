@@ -368,5 +368,39 @@ namespace YouMedServer.Controllers
 
             return Ok(new { message = "Working hours updated successfully!" });
         }
+
+        // GET: api/clinic/by-user/{userId}/patients
+        // Lấy danh sách bệnh nhân theo phòng khám mà nhân viên (UserID) đang làm việc
+        [HttpGet("by-user/{userId}/patients")]
+        public async Task<IActionResult> GetPatientsByClinic(int userId)
+        {
+            var clinicStaff = await _dbContext.ClinicStaffs
+                .FirstOrDefaultAsync(s => s.UserID == userId);
+
+            if (clinicStaff == null)
+                return NotFound(new { message = "This user does not belong to any clinic." });
+
+            var hasClinic = await _dbContext.Clinics.AnyAsync(c => c.ClinicID == clinicStaff.ClinicID);
+            if (!hasClinic)
+                return NotFound(new { message = "Clinic not found." });
+
+            var patientIDs = await _dbContext.Appointments
+                .Where(a => a.ClinicID == clinicStaff.ClinicID)
+                .Select(a => a.PatientID)
+                .Distinct()
+                .ToListAsync();
+
+            if (patientIDs.Count == 0)
+                return NotFound(new { message = "No appointments found for this clinic." });
+
+            var patients = await _dbContext.Patients
+                .Where(p => patientIDs.Contains(p.PatientID) && !p.IsDeleted)
+                .ToListAsync();
+
+            if (patients.Count == 0)
+                return NotFound(new { message = "No patients found for this clinic." });
+
+            return Ok(patients);
+        }
     }
 }

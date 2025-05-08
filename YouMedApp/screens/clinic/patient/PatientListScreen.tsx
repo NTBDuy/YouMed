@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderSection from 'components/HeaderSection';
 import { useCallback, useContext, useState } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { fetchClinicPatients } from 'utils/apiUtils';
+import { fetchPatients } from 'utils/apiUtils';
 import { AuthContext } from 'contexts/AuthContext';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import Fontisto from '@expo/vector-icons/Fontisto';
@@ -31,7 +31,7 @@ const PatientListScreen = () => {
   const getData = async () => {
     try {
       setLoading(true);
-      const res = await fetchClinicPatients(user!.userID);
+      const res = await fetchPatients(user!.userID);
       if (res.ok) {
         const data = await res.json();
         setPatients(data);

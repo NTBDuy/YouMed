@@ -30,79 +30,6 @@ namespace YouMedServer.Controllers
             return Ok(patients);
         }
 
-        // GET: api/patient/user/{userId}
-        // Lấy danh sách bệnh nhân theo UserID (bệnh nhân do người dùng quản lý)
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetPatientsByUserId(int userId)
-        {
-            var patients = await _dbContext.Patients
-                .Where(p => p.UserID == userId && !p.IsDeleted)
-                .ToListAsync();
-
-            if (patients.Count == 0)
-                return NotFound(new { message = "Patient not found for this User!" });
-
-            return Ok(patients);
-        }
-
-        // GET: api/patient/clinic/{userId}
-        // Lấy danh sách bệnh nhân theo phòng khám mà nhân viên (UserID) đang làm việc
-        [HttpGet("clinic/{userId}")]
-        public async Task<IActionResult> GetPatientsByClinic(int userId)
-        {
-            var clinicStaff = await _dbContext.ClinicStaffs
-                .FirstOrDefaultAsync(s => s.UserID == userId);
-
-            if (clinicStaff == null)
-                return NotFound(new { message = "This user does not belong to any clinic." });
-
-            var hasClinic = await _dbContext.Clinics.AnyAsync(c => c.ClinicID == clinicStaff.ClinicID);
-            if (!hasClinic)
-                return NotFound(new { message = "Clinic not found." });
-
-            var patientIDs = await _dbContext.Appointments
-                .Where(a => a.ClinicID == clinicStaff.ClinicID)
-                .Select(a => a.PatientID)
-                .Distinct()
-                .ToListAsync();
-
-            if (patientIDs.Count == 0)
-                return NotFound(new { message = "No appointments found for this clinic." });
-
-            var patients = await _dbContext.Patients
-                .Where(p => patientIDs.Contains(p.PatientID) && !p.IsDeleted)
-                .ToListAsync();
-
-            if (patients.Count == 0)
-                return NotFound(new { message = "No patients found for this clinic." });
-
-            return Ok(patients);
-        }
-
-        // GET: api/patient/doctor/{userId}
-        // Lấy danh sách bệnh nhân đã từng có lịch hẹn với bác sĩ (UserID)
-        [HttpGet("doctor/{userId}")]
-        public async Task<IActionResult> GetPatientsByDoctor(int userId)
-        {
-            var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
-            if (doctor == null)
-                return NotFound(new { message = "Doctor not found." });
-
-            var appointments = await _dbContext.Appointments
-                .Where(a => a.DoctorID == doctor.DoctorID)
-                .ToListAsync();
-            if (appointments.Count == 0)
-                return NotFound(new { message = "No appointments found for this doctor." });
-
-            var patientIds = appointments.Select(a => a.PatientID).Distinct().ToList();
-
-            var patients = await _dbContext.Patients
-                    .Where(p => patientIds.Contains(p.PatientID) && !p.IsDeleted)
-                    .ToListAsync();
-
-            return Ok(patients);
-        }
-
         // POST: api/patient
         // Thêm bệnh nhân mới vào hệ thống
         [HttpPost]
@@ -135,6 +62,8 @@ namespace YouMedServer.Controllers
             await _dbContext.SaveChangesAsync();
             return Ok(new { message = "Patient added successfully." });
         }
+
+        
 
         // PUT: api/patient/{patientId}
         // Cập nhật thông tin bệnh nhân theo PatientID

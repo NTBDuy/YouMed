@@ -10,7 +10,7 @@ import BookingScreen from 'screens/client/home/BookingScreen';
 import AppointmentScreen from 'screens/client/appointment/AppointmentScreen';
 import AppointmentDetailScreen from 'screens/client/appointment/AppointmentDetailScreen';
 import RescheduleScreen from 'screens/client/appointment/RescheduleScreen';
-import NotificationScreen from 'screens/NotificationScreen';
+import NotificationScreen from 'screens/shared/NotificationScreen';
 import PatientDetailScreen from 'screens/client/profile/PatientDetailScreen';
 import EditPatientScreen from 'screens/client/profile/EditPatientScreen';
 import AddPatientScreen from 'screens/client/profile/AddPatientScreen';
@@ -19,9 +19,9 @@ import AddInsuranceScreen from 'screens/client/profile/AddInsuranceScreen';
 import MedicalHistoryScreen from 'screens/client/profile/MedicalHistoryScreen';
 import PatientScreen from 'screens/client/profile/PatientScreen';
 import ProfileScreen from 'screens/client/profile/ProfileScreen';
-import UpdateUserInformationScreen from 'screens/UpdateUserInformationScreen'
-import MedicalHistoryPatient from 'screens/MedicalHistoryScreen';
-import RecordDetailScreen from 'screens/RecordDetailScreen';
+import UpdateUserInformationScreen from 'screens/shared/UpdateUserInformationScreen'
+import MedicalHistoryPatient from 'screens/shared/MedicalHistoryScreen';
+import RecordDetailScreen from 'screens/shared/RecordDetailScreen';
 import ScheduleFollowUpScreen from 'screens/client/home/ScheduleFollowUpScreen';
 import NearbyClinicScreen from 'screens/client/home/NearbyClinicScreen';
 

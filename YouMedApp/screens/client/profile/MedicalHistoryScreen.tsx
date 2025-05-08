@@ -2,7 +2,7 @@ import { View, Text, SafeAreaView, Pressable, FlatList } from 'react-native';
 import { useCallback, useContext, useState } from 'react';
 import HeaderSection from 'components/HeaderSection';
 import { AuthContext } from 'contexts/AuthContext';
-import { fetchClientPatients } from 'utils/apiUtils';
+import { fetchPatients } from 'utils/apiUtils';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getUserInitials } from 'utils/userHelpers';
 import Patient from 'types/Patient';
@@ -15,7 +15,7 @@ const MedicalHistoryScreen = () => {
   const fetchData = async () => {
     try {
       if (user) {
-        const res = await fetchClientPatients(user.userID);
+        const res = await fetchPatients(user!.userID);
         if (res.ok) {
           const data = await res.json();
           setPatients(data);

@@ -11,10 +11,10 @@ import {
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { fetchDoctorPatients } from 'utils/apiUtils';
 import { Ionicons } from '@expo/vector-icons';
 import { formatDate } from 'utils/datetimeUtils';
 import Patient from 'types/Patient';
+import { fetchPatients } from 'utils/apiUtils';
 
 const DoctorPatientScreen = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -28,7 +28,7 @@ const DoctorPatientScreen = () => {
   const getPatients = async () => {
     setLoading(true);
     try {
-      const res = await fetchDoctorPatients(user!.userID);
+      const res = await fetchPatients(user!.userID);
       if (res.ok) {
         const data = await res.json();
         setPatients(data);
