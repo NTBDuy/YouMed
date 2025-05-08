@@ -23,9 +23,9 @@ import { formatDate, formatTime } from 'utils/datetimeUtils';
 import { getGenderText } from 'utils/userHelpers';
 import DateTimePickerModal from 'components/DateTimePickerModal';
 import DateTimeField from 'components/DateTimeField';
-import { Clinic } from 'types/Clinic';
-import { Doctor } from 'types/Doctor';
-import { Patient } from 'types/Patient';
+import Clinic from 'types/Clinic';
+import Doctor from 'types/Doctor';
+import Patient from 'types/Patient';
 
 const BookingScreen = () => {
   const route = useRoute();

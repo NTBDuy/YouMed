@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { AuthStackParamList } from '../../types/StackParamList';
 import { register } from 'utils/apiUtils';
-import { AuthErrorState } from 'types/ErrorState';
+import AuthErrorState from 'types/ErrorState';
 
 const RegisterScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');

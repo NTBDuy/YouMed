@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Alert, ScrollView } from 'react-native';
+import { View, Text, Pressable, Alert } from 'react-native';
 import { useCallback, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderSection from 'components/HeaderSection';
@@ -8,8 +8,8 @@ import { formatDate, formatDatetime } from 'utils/datetimeUtils';
 import { getGenderText } from 'utils/userHelpers';
 import InfoItem from 'components/appointment/InfoItem';
 import SectionHeader from 'components/appointment/SectionHeader';
-import { Patient } from 'types/Patient';
-import { Insurance } from 'types/Insuarance';
+import Patient from 'types/Patient';
+import Insurance from 'types/Insuarance';
 
 const DoctorPatientDetailScreen = () => {
   const navigation = useNavigation<any>();

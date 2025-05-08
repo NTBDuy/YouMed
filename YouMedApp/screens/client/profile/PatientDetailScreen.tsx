@@ -20,8 +20,8 @@ import { ProfileStackParamList } from '../../../types/StackParamList';
 import { deletePatient, fetchInsuranceDetail, fetchPatientDetail } from 'utils/apiUtils';
 import { formatDate, formatDatetime } from 'utils/datetimeUtils';
 import HeaderSection from 'components/HeaderSection';
-import { Patient } from 'types/Patient';
-import { Insurance } from 'types/Insuarance';
+import Patient from 'types/Patient';
+import Insurance from 'types/Insuarance';
 
 const PatientDetailScreen = () => {
   const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();

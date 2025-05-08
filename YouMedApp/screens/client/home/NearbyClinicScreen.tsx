@@ -4,7 +4,7 @@ import HeaderSection from 'components/HeaderSection';
 import MapView, { Callout, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { getDistance } from 'geolib';
-import { Clinic } from 'types/Clinic';
+import Clinic from 'types/Clinic';
 import { fetchClinics } from 'utils/apiUtils';
 import { ActivityIndicator, View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';

@@ -20,7 +20,7 @@ import { getUserInitials } from 'utils/userHelpers';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Doctor } from 'types/Doctor';
+import Doctor from 'types/Doctor';
 
 const ManageDoctorsScreen = () => {
   const navigation = useNavigation<any>();

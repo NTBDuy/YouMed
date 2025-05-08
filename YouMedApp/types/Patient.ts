@@ -1,6 +1,6 @@
-import { User } from "./User";
+import User from "./User";
 
-export interface Patient {
+export default interface Patient {
   patientID: number;
   fullname: string;
   phoneNumber: string;

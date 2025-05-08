@@ -1,8 +1,8 @@
-import { Clinic } from "./Clinic";
-import { Specialties } from "./Specialties";
-import { User } from "./User";
+import Clinic from "./Clinic";
+import Specialties from "./Specialties";
+import User from "./User";
 
-export interface Doctor {
+export default interface Doctor {
   doctorID: number;
   introduction: string; 
   experience: number; 

@@ -10,8 +10,8 @@ import InfoItem from 'components/appointment/InfoItem';
 import SectionHeader from 'components/appointment/SectionHeader';
 import { AuthContext } from 'contexts/AuthContext';
 import { getBackgroundColor, getIconColor } from 'utils/colorUtils';
-import { Patient } from 'types/Patient';
-import { Insurance } from 'types/Insuarance';
+import Patient from 'types/Patient';
+import Insurance from 'types/Insuarance';
 
 const DoctorPatientDetailScreen = () => {
   const navigation = useNavigation<any>();

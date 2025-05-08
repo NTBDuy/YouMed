@@ -1,8 +1,8 @@
-import { Appointment } from "./Appointment";
-import { Doctor } from "./Doctor";
-import { Patient } from "./Patient";
+import Appointment from "./Appointment";
+import Doctor from "./Doctor";
+import Patient from "./Patient";
 
-export interface MedicalRecord {
+export default interface MedicalRecord {
   recordID: number;
   patientID: number;
   patient: Patient;

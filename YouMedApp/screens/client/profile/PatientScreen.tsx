@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import HeaderSection from 'components/HeaderSection';
 import { getUserInitials } from 'utils/userHelpers';
-import { Patient } from 'types/Patient';
+import Patient from 'types/Patient';
 
 const PatientScreen = () => {
   const navigation = useNavigation<any>();

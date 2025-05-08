@@ -1,4 +1,4 @@
-export interface AuthErrorState {
+export default interface AuthErrorState {
     phoneNumber?: string;
     email?: string;
     fullname?: string;

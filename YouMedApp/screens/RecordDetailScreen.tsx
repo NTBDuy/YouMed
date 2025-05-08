@@ -6,11 +6,11 @@ import { fetchRecordDetail, fetchAppointmentRecord, fetchRecordParaclinical } fr
 import { useContext, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { formatDate, formatDatetime } from 'utils/datetimeUtils';
-import { getBackgroundColor, getIconColor } from 'utils/colorUtils';
+import { getIconColor } from 'utils/colorUtils';
 import { AuthContext } from 'contexts/AuthContext';
 import TestResultModal from 'components/TestResultModal';
-import { AppointmentClinicalServices } from 'types/AppointmentClinicalServices';
-import { MedicalRecord } from 'types/MedicalRecord';
+import AppointmentClinicalServices from 'types/AppointmentClinicalServices';
+import MedicalRecord from 'types/MedicalRecord';
 
 const RecordDetailScreen = () => {
   const navigation = useNavigation<any>();

@@ -1,7 +1,7 @@
-import { Appointment } from "./Appointment";
-import { ClinicalServices } from "./ClinicalServices";
+import Appointment from "./Appointment";
+import ClinicalServices from "./ClinicalServices";
 
-export interface AppointmentClinicalServices {
+export default interface AppointmentClinicalServices {
   id: number;
   appointmentID: number;
   appointment?: Appointment;

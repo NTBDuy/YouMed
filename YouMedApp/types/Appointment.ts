@@ -1,8 +1,8 @@
-import { Clinic } from "./Clinic";
-import { Doctor } from "./Doctor";
-import { Patient } from "./Patient";
+import Clinic from "./Clinic";
+import Doctor from "./Doctor";
+import Patient from "./Patient";
 
-export interface Appointment {
+export default interface Appointment {
   appointmentID: number;
   patientID: number;
   patient: Patient;

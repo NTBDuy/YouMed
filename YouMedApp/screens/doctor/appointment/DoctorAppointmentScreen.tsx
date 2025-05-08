@@ -21,7 +21,7 @@ import { TabView, TabBar } from 'react-native-tab-view';
 import HeaderSection from 'components/HeaderSection';
 import { fetchDoctorAppointments } from 'utils/apiUtils';
 import { formatLocaleDateTime } from 'utils/datetimeUtils';
-import { Appointment } from 'types/Appointment';
+import Appointment from 'types/Appointment';
 
 // Define sort types
 const SORT_OPTIONS = {

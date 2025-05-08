@@ -1,4 +1,4 @@
-export interface WorkingHours {
+export default interface WorkingHours {
     clinicWorkingHoursID?: number;
     clinicID?: number;
     dayOfWeek: number;

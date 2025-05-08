@@ -1,9 +1,7 @@
 import {
   ActivityIndicator,
   FlatList,
-  Pressable,
   RefreshControl,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -17,7 +15,7 @@ import { AuthContext } from 'contexts/AuthContext';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import { getUserInitials } from 'utils/userHelpers';
-import { Patient } from 'types/Patient';
+import Patient from 'types/Patient';
 
 const PatientListScreen = () => {
   const navigation = useNavigation<any>();

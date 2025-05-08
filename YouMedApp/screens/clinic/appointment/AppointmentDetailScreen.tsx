@@ -34,8 +34,8 @@ import DateTimePickerModal from 'components/DateTimePickerModal';
 import { formatDate, formatDatetime, formatTime } from 'utils/datetimeUtils';
 import { notifyAppointmentCancelled, notifyAppointmentReScheduled } from 'utils/notificationUtils';
 import { getGenderText } from 'utils/userHelpers';
-import { Appointment } from 'types/Appointment';
-import { AppointmentClinicalServices } from 'types/AppointmentClinicalServices';
+import Appointment from 'types/Appointment';
+import AppointmentClinicalServices from 'types/AppointmentClinicalServices';
 
 const StatusBadge = ({ status }: { status: string }) => {
   const getStatusColor = (status: string) => {

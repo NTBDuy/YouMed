@@ -18,7 +18,7 @@ import { notifyAppointmentReScheduled } from 'utils/notificationUtils';
 import HeaderSection from 'components/HeaderSection';
 import DateTimeField from 'components/DateTimeField';
 import DateTimePickerModal from 'components/DateTimePickerModal';
-import { Appointment } from 'types/Appointment';
+import Appointment from 'types/Appointment';
 
 const RescheduleScreen = () => {
   const navigation = useNavigation<any>();

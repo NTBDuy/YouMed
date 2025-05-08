@@ -29,9 +29,9 @@ import DateTimeField from 'components/DateTimeField';
 import DateTimePickerModal from 'components/DateTimePickerModal';
 import TestResultModal from 'components/TestResultModal';
 import { AuthContext } from 'contexts/AuthContext';
-import { Appointment } from 'types/Appointment';
-import { ClinicalServices } from 'types/ClinicalServices';
-import { AppointmentClinicalServices } from 'types/AppointmentClinicalServices';
+import Appointment from 'types/Appointment';
+import ClinicalServices from 'types/ClinicalServices';
+import AppointmentClinicalServices from 'types/AppointmentClinicalServices';
 
 const StatusBadge = ({ status }: { status: string }) => {
   const getStatusColor = (status: string) => {

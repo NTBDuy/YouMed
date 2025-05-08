@@ -16,7 +16,7 @@ import { deleteDoctor, fetchDoctorDetail } from 'utils/apiUtils';
 import { formatDatetime } from 'utils/datetimeUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUserPen, faUserXmark } from '@fortawesome/free-solid-svg-icons';
-import { Doctor } from 'types/Doctor';
+import Doctor from 'types/Doctor';
 
 const InfoSection = ({ label, value, icon }: { label: string; value: string; icon: any }) => (
   <View className="mb-3">

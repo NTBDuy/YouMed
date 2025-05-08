@@ -9,7 +9,7 @@ import { AuthContext } from 'contexts/AuthContext';
 import HeaderSection from 'components/HeaderSection';
 import { formatLocaleDateTime } from 'utils/datetimeUtils';
 import { Ionicons } from '@expo/vector-icons';
-import { Appointment } from 'types/Appointment';
+import Appointment from 'types/Appointment';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPhone, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 

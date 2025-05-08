@@ -1,6 +1,6 @@
-import { Clinic } from "./Clinic";
+import Clinic from "./Clinic";
 
-export interface ClinicalServices {
+export default interface ClinicalServices {
   clinicalServiceID: number;
   name: string;
   description: string;

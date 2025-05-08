@@ -20,8 +20,8 @@ import { DoctorStackParamList } from '../../../types/StackParamList';
 import { getGenderText, getUserInitials } from 'utils/userHelpers';
 import { fetchDoctorPatients, fetchAppointmentsByDoctor, fetchTodayDoctorStats } from 'utils/apiUtils';
 import { formatLocaleDateTime, showTodayOrTomorrow } from 'utils/datetimeUtils';
-import { Appointment } from 'types/Appointment';
-import { Patient } from 'types/Patient';
+import Appointment from 'types/Appointment';
+import Patient from 'types/Patient';
 
 const DoctorHomeScreen = () => {
   const navigation = useNavigation<NavigationProp<DoctorStackParamList>>();

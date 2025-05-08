@@ -5,7 +5,7 @@ import { AuthContext } from 'contexts/AuthContext';
 import { fetchClientPatients } from 'utils/apiUtils';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getUserInitials } from 'utils/userHelpers';
-import { Patient } from 'types/Patient';
+import Patient from 'types/Patient';
 
 const MedicalHistoryScreen = () => {
   const navigation = useNavigation<any>();

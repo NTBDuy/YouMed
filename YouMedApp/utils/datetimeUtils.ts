@@ -98,3 +98,12 @@ export const showDayOfWeek = (number: number) => {
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   return daysOfWeek[number];
 };
+
+/**
+ * Hàm lấy thời gian trong ngày
+ */
+export const timeOptions = Array.from({ length: 48 }, (_, index) => {
+  const hours = Math.floor(index / 2).toString().padStart(2, '0');
+  const minutes = (index % 2 === 0 ? '00' : '30');
+  return `${hours}:${minutes}`;
+});

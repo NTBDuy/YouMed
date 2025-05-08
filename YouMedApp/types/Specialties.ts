@@ -1,4 +1,4 @@
-export interface Specialties {
+export default interface Specialties {
   specialtyID: number;
   name: string;
 }

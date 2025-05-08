@@ -1,6 +1,6 @@
-import { User } from "./User";
+import User from "./User";
 
-export interface Notifications {
+export default interface Notifications {
   notificationID: number;
   title: string;
   message: string;

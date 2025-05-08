@@ -6,7 +6,6 @@ import {
   Pressable,
   ActivityIndicator,
   RefreshControl,
-  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -17,8 +16,8 @@ import { fetchClinics, fetchSpecialties } from 'utils/apiUtils';
 import { isOpenNow } from 'utils/userHelpers';
 import { calculateDistance, getUserLocation, LocationData } from 'utils/locationUtils';
 import HeaderSection from 'components/HeaderSection';
-import { Clinic } from 'types/Clinic';
-import { Specialties } from 'types/Specialties';
+import Clinic from 'types/Clinic';
+import Specialties from 'types/Specialties';
 import * as Location from 'expo-location';
 
 const ClinicScreen = () => {

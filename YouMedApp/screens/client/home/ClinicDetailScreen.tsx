@@ -12,7 +12,7 @@ import {
   faStethoscope,
 } from '@fortawesome/free-solid-svg-icons';
 
-import { Clinic } from 'types/Clinic';
+import Clinic from 'types/Clinic';
 import HeaderSection from 'components/HeaderSection';
 import { useEffect, useState } from 'react';
 import { fetchClinicDetail } from 'utils/apiUtils';

@@ -14,7 +14,6 @@ import {
   faChartLine,
   faCalendarDays,
   faUsers,
-  faLocationDot,
   faClock,
   faImage
 } from '@fortawesome/free-solid-svg-icons';

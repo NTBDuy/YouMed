@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { fetchDoctorPatients } from 'utils/apiUtils';
 import { Ionicons } from '@expo/vector-icons';
 import { formatDate } from 'utils/datetimeUtils';
-import { Patient } from 'types/Patient';
+import Patient from 'types/Patient';
 
 const DoctorPatientScreen = () => {
   const [patients, setPatients] = useState<Patient[]>([]);

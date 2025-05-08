@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { fetchRecordsByClinic } from 'utils/apiUtils';
 import { Ionicons } from '@expo/vector-icons';
 import { formatDate } from 'utils/datetimeUtils';
-import { MedicalRecord } from 'types/MedicalRecord';
+import MedicalRecord from 'types/MedicalRecord';
 
 const MedicalRecordScreen = () => {
   const [records, setRecords] = useState<MedicalRecord[]>([]);

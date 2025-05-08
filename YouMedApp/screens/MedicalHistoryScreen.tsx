@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { formatDate } from 'utils/datetimeUtils';
 import { AuthContext } from 'contexts/AuthContext';
 import { getIconColor } from 'utils/colorUtils';
-import { MedicalRecord } from 'types/MedicalRecord';
+import MedicalRecord from 'types/MedicalRecord';
 
 const MedicalHistoryScreen = () => {
   const route = useRoute();

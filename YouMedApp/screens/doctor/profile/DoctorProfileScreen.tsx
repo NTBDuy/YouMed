@@ -8,6 +8,7 @@ import {
   faUserCircle,
   faBell,
   faShieldHalved,
+  faClock,
 } from '@fortawesome/free-solid-svg-icons';
 
 import MenuItem from 'components/profile/MenuItem';
@@ -33,18 +34,42 @@ const DoctorProfileScreen = ({ setIsLoggedIn }: { setIsLoggedIn: (value: boolean
       <ScrollView className="-mb-10 flex-1" showsVerticalScrollIndicator={false}>
         <Section className="mx-4 mt-4">
           <Text className="mb-1 mt-4 text-base font-bold text-gray-800">Account Settings</Text>
-           <MenuItem
+          <MenuItem
             icon={faUserCircle}
             title="Update Doctor Information"
+            color="#3b82f6"
             onPress={() => navigation.navigate('UpdateInformation')}
           />
-          <MenuItem icon={faBell} title="Notifications" onPress={handlePress} showDivider={false} />
+          <MenuItem
+            icon={faClock}
+            title="Doctor Schedule"
+            color="#f59e0b"
+            onPress={() => navigation.navigate('DoctorSchedule')}
+          />
+          <MenuItem
+            icon={faBell}
+            title="Notifications"
+            color="#10b981"
+            onPress={handlePress}
+            showDivider={false}
+          />
         </Section>
 
         <Section className="mx-4">
           <Text className="mb-1 mt-4 text-base font-bold text-gray-800">More</Text>
-          <MenuItem icon={faFileContract} title="Terms and Conditions" color="#6366f1" onPress={handlePress} />
-          <MenuItem icon={faShieldHalved} title="Privacy Policy" color="#14b8a6" onPress={handlePress} showDivider={false} />
+          <MenuItem
+            icon={faFileContract}
+            title="Terms and Conditions"
+            color="#6366f1"
+            onPress={handlePress}
+          />
+          <MenuItem
+            icon={faShieldHalved}
+            title="Privacy Policy"
+            color="#14b8a6"
+            onPress={handlePress}
+            showDivider={false}
+          />
         </Section>
 
         <Section className="mx-4 mb-6">
@@ -71,7 +96,7 @@ const DoctorProfileScreen = ({ setIsLoggedIn }: { setIsLoggedIn: (value: boolean
         </Section>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default DoctorProfileScreen
+export default DoctorProfileScreen;

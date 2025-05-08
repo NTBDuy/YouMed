@@ -17,7 +17,7 @@ import { useNavigation, NavigationProp, useFocusEffect } from '@react-navigation
 import { AuthContext } from '../../contexts/AuthContext';
 import { AuthStackParamList } from '../../types/StackParamList';
 import { login } from 'utils/apiUtils';
-import { AuthErrorState } from 'types/ErrorState';
+import AuthErrorState from 'types/ErrorState';
 
 type LoginScreenProps = {
   setIsLoggedIn: (value: boolean) => void;

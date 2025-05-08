@@ -16,8 +16,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheck, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { fetchSpecialties, updateDoctor } from 'utils/apiUtils';
-import { Specialties } from 'types/Specialties';
-import { Doctor } from 'types/Doctor';
+import Specialties from 'types/Specialties';
+import Doctor from 'types/Doctor';
 
 const EditDoctorScreen = () => {
   const navigation = useNavigation<any>();

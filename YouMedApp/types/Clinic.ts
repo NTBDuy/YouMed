@@ -1,7 +1,7 @@
-import { Specialties } from "./Specialties";
-import { WorkingHours } from "./WorkingHours";
+import Specialties from "./Specialties";
+import WorkingHours from "./WorkingHours";
 
-export interface Clinic {
+export default interface Clinic {
     clinicID: number;
     name: string;
     clinicAddress: string;
@@ -10,9 +10,8 @@ export interface Clinic {
     createdAt: string; 
     specialties: Specialties[]
     clinicWorkingHours: WorkingHours[]
-    latitude: number; // Thêm thuộc tính latitude
-    longitude: number; // Thêm thuộc tính longitude
-
+    latitude: number; 
+    longitude: number; 
     rating?: number;
     distance?: string;
     openingHours?: string;

@@ -16,6 +16,7 @@ import RecordDetailScreen from 'screens/RecordDetailScreen';
 import DoctorPatientScreen from 'screens/doctor/home/DoctorPatientScreen';
 import DoctorMedicalRecordScreen from 'screens/doctor/home/DoctorMedicalRecordScreen';
 import DoctorPatientDetailScreen from 'screens/doctor/home/DoctorPatientDetailScreen';
+import DoctorScheduleScreen from 'screens/doctor/profile/DoctorScheduleScreen';
 
 const DoctorTab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -59,6 +60,7 @@ function ProfileStackScreen({ setIsLoggedIn }: { setIsLoggedIn: (value: boolean)
         {() => <DoctorProfileScreen setIsLoggedIn={setIsLoggedIn} />}
       </ProfileStack.Screen>
       <ProfileStack.Screen name='UpdateInformation' component={UpdateDoctorInformationScreen}/>
+      <ProfileStack.Screen name='DoctorSchedule' component={DoctorScheduleScreen}/>
     </ProfileStack.Navigator>
   );
 }

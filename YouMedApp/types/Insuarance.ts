@@ -1,4 +1,4 @@
-export interface Insurance {
+export default interface Insurance {
   healthInsuranceID: string;
   patientID: string;
   startDate: string;

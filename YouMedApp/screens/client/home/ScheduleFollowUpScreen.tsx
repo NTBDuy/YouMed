@@ -22,7 +22,7 @@ import { formatDate, formatTime } from 'utils/datetimeUtils';
 import { getGenderText } from 'utils/userHelpers';
 import SectionHeader from 'components/appointment/SectionHeader';
 import InfoItem from 'components/appointment/InfoItem';
-import { MedicalRecord } from 'types/MedicalRecord';
+import MedicalRecord from 'types/MedicalRecord';
 
 function ScheduleFollowUpScreen() {
   const route = useRoute();

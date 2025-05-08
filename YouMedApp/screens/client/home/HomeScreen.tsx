@@ -21,8 +21,8 @@ import { fetchClinics, fetchClientUpcomingAppointments } from 'utils/apiUtils';
 import { getUserInitials, isOpenNow } from 'utils/userHelpers';
 import { showTodayOrTomorrow } from 'utils/datetimeUtils';
 import { calculateDistance, getUserLocation, LocationData } from 'utils/locationUtils';
-import { Appointment } from 'types/Appointment';
-import { Clinic } from 'types/Clinic';
+import Appointment from 'types/Appointment';
+import Clinic from 'types/Clinic';
 import * as Location from 'expo-location';
 
 const HomeScreen = () => {

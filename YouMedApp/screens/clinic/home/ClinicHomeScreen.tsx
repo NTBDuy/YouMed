@@ -20,7 +20,7 @@ import {
 import { AuthContext } from 'contexts/AuthContext';
 import { getUserInitials } from 'utils/userHelpers';
 import { fetchAppointmentsByClinic, fetchTodayClinicStats } from 'utils/apiUtils';
-import { Appointment } from 'types/Appointment';
+import Appointment from 'types/Appointment';
 
 const ClinicHomeScreen = () => {
   const navigation = useNavigation<any>();

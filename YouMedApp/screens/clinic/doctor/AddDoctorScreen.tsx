@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { createDoctor, fetchSpecialties } from 'utils/apiUtils';
 import { AuthContext } from 'contexts/AuthContext';
-import { Specialties } from 'types/Specialties';
+import Specialties from 'types/Specialties';
 
 const AddDoctorScreen = () => {
   const navigation = useNavigation<any>();

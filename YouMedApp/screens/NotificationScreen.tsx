@@ -7,7 +7,7 @@ import { fetchNotifications, updateStatus } from 'utils/apiUtils';
 import { formatDatetime } from 'utils/datetimeUtils';
 import HeaderSection from 'components/HeaderSection';
 import { getBackgroundColor } from 'utils/colorUtils';
-import { Notifications } from 'types/Notification';
+import Notifications from 'types/Notification';
 
 const NotificationScreen = () => {
   const { user } = useContext(AuthContext);

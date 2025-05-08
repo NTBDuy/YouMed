@@ -22,7 +22,7 @@ import {
   faHouseChimneyMedical,
   faCircleExclamation,
 } from '@fortawesome/free-solid-svg-icons';
-import { Clinic } from 'types/Clinic';
+import Clinic from 'types/Clinic';
 import * as Location from 'expo-location';
 
 const ClinicInformationScreen = () => {

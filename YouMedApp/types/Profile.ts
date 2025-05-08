@@ -1,4 +1,4 @@
-export interface Profile {
+export default interface Profile {
     userID: number;
     phoneNumber: string;
     password: string;
