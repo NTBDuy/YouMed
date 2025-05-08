@@ -6,18 +6,18 @@ import { useNotification } from 'contexts/NotificationContext';
 import ClinicHomeScreen from 'screens/clinic/home/ClinicHomeScreen';
 import ClinicAppointmentScreen from 'screens/clinic/appointment/ClinicAppointmentScreen';
 import AppointmentDetailScreen from 'screens/clinic/appointment/AppointmentDetailScreen';
-import ManageDoctorsScreen from 'screens/clinic/profile/ManageDoctorsScreen';
-import DoctorDetailScreen from 'screens/clinic/profile/DoctorDetailScreen';
-import AddDoctorScreen from 'screens/clinic/profile/AddDoctorScreen';
-import EditDoctorScreen from 'screens/clinic/profile/EditDoctorScreen';
+import ManageDoctorsScreen from 'screens/clinic/doctor/ManageDoctorsScreen';
+import DoctorDetailScreen from 'screens/clinic/doctor/DoctorDetailScreen';
+import AddDoctorScreen from 'screens/clinic/doctor/AddDoctorScreen';
+import EditDoctorScreen from 'screens/clinic/doctor/EditDoctorScreen';
 import NotificationScreen from 'screens/NotificationScreen';
 import ClinicProfileScreen from 'screens/clinic/profile/ClinicProfileScreen';
-import UpdateUserInformation from 'screens/clinic/profile/UpdateUserInformation';
+import UpdateUserInformationScreen from 'screens/UpdateUserInformationScreen'
 import MedicalHistoryScreen from 'screens/MedicalHistoryScreen';
 import RecordDetailScreen from 'screens/RecordDetailScreen';
-import PatientListScreen from 'screens/clinic/profile/PatientListScreen';
+import PatientListScreen from 'screens/clinic/patient/PatientListScreen';
 import PatientDetailScreen from 'screens/PatientDetailScreen';
-import ClinicRecordScreen from 'screens/clinic/home/ClinicRecordScreen';
+import MedicalRecordScreen from 'screens/clinic/home/MedicalRecordScreen';
 import ClinicInformationScreen from 'screens/clinic/profile/ClinicInformationScreen';
 import WorkingHoursScreen from 'screens/clinic/profile/WorkingHoursScreen';
 
@@ -35,7 +35,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="DoctorDetail" component={DoctorDetailScreen} />
       <HomeStack.Screen name="EditDoctor" component={EditDoctorScreen} />
       <HomeStack.Screen name="AddDoctor" component={AddDoctorScreen} />
-      <HomeStack.Screen name="MedicalRecord" component={ClinicRecordScreen} />
+      <HomeStack.Screen name="MedicalRecord" component={MedicalRecordScreen} />
       <HomeStack.Screen name="RecordDetail" component={RecordDetailScreen} />
       <HomeStack.Screen name="AppointmentDetail" component={AppointmentDetailScreen} />
     </HomeStack.Navigator>
@@ -60,7 +60,7 @@ function ProfileStackScreen({ setIsLoggedIn }: { setIsLoggedIn: (value: boolean)
       <ProfileStack.Screen name="Profile">
         {() => <ClinicProfileScreen setIsLoggedIn={setIsLoggedIn} />}
       </ProfileStack.Screen>
-      <ProfileStack.Screen name="UpdateInformation" component={UpdateUserInformation} />
+      <ProfileStack.Screen name="UpdateInformation" component={UpdateUserInformationScreen} />
       <ProfileStack.Screen name="ManageDoctors" component={ManageDoctorsScreen} />
       <ProfileStack.Screen name="DoctorDetail" component={DoctorDetailScreen} />
       <ProfileStack.Screen name="EditDoctor" component={EditDoctorScreen} />

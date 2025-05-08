@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Linking, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { fetchAppointmentDetail, updateAppointmentStatus } from 'utils/apiUtils';
@@ -10,6 +10,8 @@ import HeaderSection from 'components/HeaderSection';
 import { formatLocaleDateTime } from 'utils/datetimeUtils';
 import { Ionicons } from '@expo/vector-icons';
 import { Appointment } from 'types/Appointment';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faPhone, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 
 const StatusBadge = ({ status }: { status: string }) => {
   const getStatusColor = (status: string) => {
@@ -57,10 +59,12 @@ const AppointmentInfoItem = ({
   icon,
   label,
   value,
+  rightElement,
 }: {
   icon: string;
   label: string;
   value: string;
+  rightElement?: React.ReactNode;
 }) => {
   return (
     <View className="flex-row items-center py-2">
@@ -71,6 +75,7 @@ const AppointmentInfoItem = ({
         <Text className="text-xs text-gray-500">{label}</Text>
         <Text className="text-sm font-medium text-gray-700">{value}</Text>
       </View>
+      {rightElement && <View className="ml-auto">{rightElement}</View>}
     </View>
   );
 };
@@ -137,6 +142,21 @@ const AppointmentDetailScreen = () => {
   const handleViewMedicalRecords = () => {
     navigation.navigate('MedicalRecords', { appointmentID });
   };
+  const handleCallPress = () => {
+    if (!appointment?.clinic?.phoneNumber) return;
+
+    const phoneNumber = appointment.clinic.phoneNumber;
+    const phoneUrl = Platform.OS === 'android' ? `tel:${phoneNumber}` : `telprompt:${phoneNumber}`;
+    Linking.openURL(phoneUrl).catch((err) => console.error('Error opening phone dialer:', err));
+  };
+
+  const handleMapPress = () => {
+    if (!appointment?.clinic?.clinicAddress) return;
+
+    const address = encodeURIComponent(appointment.clinic.clinicAddress);
+    const url = Platform.OS === 'ios' ? `maps:0,0?q=${address}` : `geo:0,0?q=${address}`;
+    Linking.openURL(url).catch((err) => console.error('Error opening maps:', err));
+  };
 
   if (loading) {
     return (
@@ -183,13 +203,33 @@ const AppointmentDetailScreen = () => {
           />
 
           {/* Clinic info */}
-          <AppointmentInfoItem icon="medical" label="Clinic" value={appointment.clinic!.name} />
+          <AppointmentInfoItem
+            icon="medical"
+            label="Clinic"
+            value={appointment.clinic!.name}
+            rightElement={
+              <Pressable
+                className="flex flex-row items-center rounded-lg bg-blue-500 px-4 py-2 shadow-sm active:bg-blue-600"
+                onPress={handleCallPress}>
+                <FontAwesomeIcon icon={faPhone} size={14} color="#ffffff" />
+                <Text className="ml-2 text-sm font-medium text-white">Call</Text>
+              </Pressable>
+            }
+          />
 
           {/* Clinic address */}
           <AppointmentInfoItem
             icon="location"
             label="Address"
             value={appointment.clinic!.clinicAddress}
+            rightElement={
+              <Pressable
+                className="flex flex-row items-center rounded-lg bg-blue-500 px-4 py-2 shadow-sm active:bg-blue-600"
+                onPress={handleMapPress}>
+                <FontAwesomeIcon icon={faLocationDot} size={14} color="#ffffff"/>
+                <Text className="ml-2 text-sm font-medium text-white">Map</Text>
+              </Pressable>
+            }
           />
 
           {/* Symptom note, if exists */}

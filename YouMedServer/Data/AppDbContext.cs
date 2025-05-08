@@ -20,6 +20,7 @@ public class AppDbContext : DbContext
     public DbSet<ClinicalService> ClinicalServices { get; set; }
     public DbSet<AppointmentClinicalService> AppointmentClinicalServices { get; set; }
     public DbSet<ClinicWorkingHours> ClinicWorkingHours { get; set; }
+    public DbSet<DoctorSchedule> DoctorSchedules { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

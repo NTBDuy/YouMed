@@ -9,7 +9,7 @@ import { fetchClinics } from 'utils/apiUtils';
 import { ActivityIndicator, View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const NearbyClinic = () => {
+const NearbyClinicScreen = () => {
   const navigation = useNavigation<any>();
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(
     null
@@ -117,4 +117,4 @@ const NearbyClinic = () => {
   );
 };
 
-export default NearbyClinic;
+export default NearbyClinicScreen;

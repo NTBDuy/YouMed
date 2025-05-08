@@ -23,7 +23,7 @@ import { AuthContext } from 'contexts/AuthContext';
 import { fetchDoctorByUserID, updateDoctor } from 'utils/apiUtils';
 import HeaderSection from 'components/HeaderSection';
 
-const UpdateDoctorInformation = () => {
+const UpdateDoctorInformationScreen = () => {
   const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
   const { user, setUser } = useContext(AuthContext);
 
@@ -245,4 +245,4 @@ const UpdateDoctorInformation = () => {
   );
 };
 
-export default UpdateDoctorInformation;
+export default UpdateDoctorInformationScreen;

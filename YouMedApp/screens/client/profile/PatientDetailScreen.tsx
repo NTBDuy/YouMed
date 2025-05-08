@@ -23,7 +23,7 @@ import HeaderSection from 'components/HeaderSection';
 import { Patient } from 'types/Patient';
 import { Insurance } from 'types/Insuarance';
 
-const PatientDetail = () => {
+const PatientDetailScreen = () => {
   const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
   const { user } = useContext(AuthContext);
   const [patient, setPatient] = useState<Patient>();
@@ -316,4 +316,4 @@ const PatientDetail = () => {
   );
 };
 
-export default PatientDetail;
+export default PatientDetailScreen;

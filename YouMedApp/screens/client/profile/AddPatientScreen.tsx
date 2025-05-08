@@ -1,22 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  Alert,
-  Modal,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, NavigationProp, useRoute } from '@react-navigation/native';
+import { useContext, useState } from 'react';
+import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { AuthContext } from 'contexts/AuthContext';
 import { ProfileStackParamList } from '../../../types/StackParamList';
-import { fetchPatientDetail, updatePatient } from 'utils/apiUtils';
+import { createPatient } from 'utils/apiUtils';
 import HeaderSection from 'components/HeaderSection';
 import { formatDate } from 'utils/datetimeUtils';
 import DateTimeField from 'components/DateTimeField';
@@ -32,12 +20,9 @@ type RelationshipType =
   | 'Other'
   | null;
 
-const EditPatient = () => {
+const AddPatientScreen = () => {
   const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
   const { user } = useContext(AuthContext);
-
-  const route = useRoute();
-  const { patientID } = route.params as { patientID: number };
 
   const [fullname, setFullname] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -51,43 +36,7 @@ const EditPatient = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const relationshipOptions: RelationshipType[] = [
-    'Self',
-    'Father',
-    'Mother',
-    'Child',
-    'Wife',
-    'Husband',
-    'Other',
-  ];
-
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  const fetchUserData = async () => {
-    try {
-      if (!user) return;
-
-      const response = await fetchPatientDetail(patientID);
-
-      if (response.ok) {
-        const userData = await response.json();
-        setFullname(userData.fullname || '');
-        setPhoneNumber(userData.phoneNumber || '');
-        setEmailAddress(userData.emailAddress || '');
-        setDate(userData.dateOfBirth ? new Date(userData.dateOfBirth) : new Date());
-        setHomeAddress(userData.homeAddress || '');
-        setCitizenID(userData.citizenID || '');
-        setGender(userData.gender === 'M' ? 'male' : 'female');
-        setRelationship(userData.relationship || 'Self');
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
-
-  const handleSave = async () => {
+  const handleAdd = async () => {
     try {
       if (!user) return;
 
@@ -98,7 +47,7 @@ const EditPatient = () => {
 
       setIsLoading(true);
 
-      const updatedUserData = {
+      const data = {
         fullname,
         phoneNumber,
         emailAddress,
@@ -106,11 +55,11 @@ const EditPatient = () => {
         gender: gender === 'male' ? 'M' : 'F',
         homeAddress,
         citizenID,
-        relationship: relationship || 'Self',
         userID: user.userID,
+        relationship: relationship || 'Self',
       };
 
-      const response = await updatePatient(patientID, updatedUserData);
+      const response = await createPatient(data);
 
       if (response.ok) {
         Alert.alert('Success', 'Profile updated successfully');
@@ -127,14 +76,19 @@ const EditPatient = () => {
     }
   };
 
+  const relationshipOptions: RelationshipType[] = [
+    'Self',
+    'Father',
+    'Mother',
+    'Child',
+    'Wife',
+    'Husband',
+    'Other',
+  ];
+
   return (
     <SafeAreaView className="flex-1 bg-gray-100">
-      <HeaderSection
-        customTitle={
-          <Text className="text-xl font-bold text-white">Edit Patient #{patientID}</Text>
-        }
-        backBtn
-      />
+      <HeaderSection title="Create new patient" backBtn />
 
       <ScrollView className="-mb-10 p-4">
         <View className="mb-3">
@@ -161,12 +115,14 @@ const EditPatient = () => {
         </View>
 
         <View className="mb-3">
-          <Text className="mb-2">Email Address</Text>
+          <Text className="mb-2">
+            Email Address
+          </Text>
           <TextInput
             className="rounded-lg border border-gray-300 bg-white px-4 py-2"
             value={emailAddress}
             onChangeText={setEmailAddress}
-            keyboardType="email-address"
+            keyboardType='email-address'
           />
         </View>
 
@@ -179,6 +135,7 @@ const EditPatient = () => {
           onPress={() => setShowDatePicker(true)}
         />
 
+        {/* Gender Section */}
         <View className="mb-3">
           <Text className="mb-3 font-medium text-gray-700">
             Gender <Text className="text-red-500">*</Text>
@@ -220,7 +177,6 @@ const EditPatient = () => {
             onChangeText={setHomeAddress}
           />
         </View>
-
         <View className="mb-3">
           <Text className="mb-2">Citizen ID</Text>
           <TextInput
@@ -233,7 +189,7 @@ const EditPatient = () => {
         {/* Relationship Section */}
         <View className="mb-3">
           <Text className="mb-1 font-medium text-gray-700">Relationship</Text>
-          <Text className="mb-3 text-sm text-gray-500">If not selected, default is self</Text>
+          <Text className="mb-3 text-sm text-gray-500">If not selected, default is Self</Text>
           <View className="flex-row flex-wrap justify-between">
             {relationshipOptions.map((rel) => (
               <Pressable
@@ -255,7 +211,7 @@ const EditPatient = () => {
 
         <Pressable
           className={`mt-2 flex-1 rounded-xl p-3 ${isLoading ? 'bg-blue-300' : 'bg-blue-600'}`}
-          onPress={handleSave}
+          onPress={handleAdd}
           disabled={isLoading}>
           <Text className="text-center text-lg font-bold text-white">
             {isLoading ? 'Saving...' : 'Save'}
@@ -277,4 +233,4 @@ const EditPatient = () => {
   );
 };
 
-export default EditPatient;
+export default AddPatientScreen;

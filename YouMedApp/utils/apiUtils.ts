@@ -1,4 +1,4 @@
-const IP_SERVER = '192.168.2.125';
+const IP_SERVER = '192.168.2.145';
 const PORT = '5169';
 const API_URL = `http://${IP_SERVER}:${PORT}/api`;
 

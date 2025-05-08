@@ -10,7 +10,7 @@ import DoctorAppointmentScreen from 'screens/doctor/appointment/DoctorAppointmen
 import AppointmentDetailScreen from 'screens/doctor/appointment/AppointmentDetailScreen';
 import RescheduleAppointmentScreen from 'screens/doctor/RescheduleAppointmentScreen';
 import NotificationScreen from 'screens/NotificationScreen';
-import UpdateDoctorInformation from 'screens/doctor/profile/UpdateInformation';
+import UpdateDoctorInformationScreen from 'screens/doctor/profile/UpdateDoctorInformationScreen';
 import MedicalHistoryScreen from 'screens/MedicalHistoryScreen';
 import RecordDetailScreen from 'screens/RecordDetailScreen';
 import DoctorPatientScreen from 'screens/doctor/home/DoctorPatientScreen';
@@ -58,7 +58,7 @@ function ProfileStackScreen({ setIsLoggedIn }: { setIsLoggedIn: (value: boolean)
       <ProfileStack.Screen name="Profile">
         {() => <DoctorProfileScreen setIsLoggedIn={setIsLoggedIn} />}
       </ProfileStack.Screen>
-      <ProfileStack.Screen name='UpdateInformation' component={UpdateDoctorInformation}/>
+      <ProfileStack.Screen name='UpdateInformation' component={UpdateDoctorInformationScreen}/>
     </ProfileStack.Navigator>
   );
 }

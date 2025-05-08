@@ -16,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { formatDate } from 'utils/datetimeUtils';
 import { MedicalRecord } from 'types/MedicalRecord';
 
-const ClinicRecordScreen = () => {
+const MedicalRecordScreen = () => {
   const [records, setRecords] = useState<MedicalRecord[]>([]);
   const [filteredRecords, setFilteredRecords] = useState<MedicalRecord[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -175,4 +175,4 @@ const ClinicRecordScreen = () => {
   );
 };
 
-export default ClinicRecordScreen;
+export default MedicalRecordScreen;

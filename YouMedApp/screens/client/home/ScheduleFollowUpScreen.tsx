@@ -24,7 +24,7 @@ import SectionHeader from 'components/appointment/SectionHeader';
 import InfoItem from 'components/appointment/InfoItem';
 import { MedicalRecord } from 'types/MedicalRecord';
 
-function ScheduleFollowUp() {
+function ScheduleFollowUpScreen() {
   const route = useRoute();
   const { record } = route.params as { record: MedicalRecord };
   const navigation = useNavigation<any>();
@@ -225,4 +225,4 @@ function ScheduleFollowUp() {
   );
 }
 
-export default ScheduleFollowUp;
+export default ScheduleFollowUpScreen;
