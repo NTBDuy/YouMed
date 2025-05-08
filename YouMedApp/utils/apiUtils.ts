@@ -76,7 +76,7 @@ export const rescheduleAppointment = async (appointmentId: number, data: any) =>
 };
 
 // Cập nhật trạng thái của lịch hẹn theo AppointmentID
-export const updateAppointmentStatus = async (appointmentId: number, status: string) => {
+export const updateAppointmentStatus = async (appointmentId: number, status: number) => {
   return submitData(`appointment/${appointmentId}/status?status=${status}`, 'PUT');
 };
 

@@ -32,33 +32,7 @@ import { AuthContext } from 'contexts/AuthContext';
 import Appointment from 'types/Appointment';
 import ClinicalServices from 'types/ClinicalServices';
 import AppointmentClinicalServices from 'types/AppointmentClinicalServices';
-
-const StatusBadge = ({ status }: { status: string }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Completed':
-        return 'bg-green-100 text-green-800';
-      case 'In Progress':
-        return 'bg-orange-100 text-orange-800';
-      case 'Pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Cancelled':
-        return 'bg-red-100 text-red-800';
-      case 'Scheduled':
-        return 'bg-emerald-100 text-emerald-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  return (
-    <View className={`rounded-full px-3 py-1 ${getStatusColor(status).split(' ')[0]}`}>
-      <Text className={`text-xs font-medium ${getStatusColor(status).split(' ')[1]}`}>
-        {status}
-      </Text>
-    </View>
-  );
-};
+import StatusBadge from 'components/StatusBadge';
 
 const AppointmentDetailScreen = () => {
   const navigation = useNavigation<any>();
@@ -102,7 +76,7 @@ const AppointmentDetailScreen = () => {
       if (response.ok) {
         const data = await response.json();
         setAppointment(data);
-        if (data.status === 'Completed') {
+        if (data.status === 3) {
           const res = await fetchAppointmentRecord(appointmentID);
           if (res.ok) {
             const record = await res.json();
@@ -153,7 +127,7 @@ const AppointmentDetailScreen = () => {
 
   const handleStartExamination = async () => {
     try {
-      const response = await updateAppointmentStatus(appointmentID, 'In Progress');
+      const response = await updateAppointmentStatus(appointmentID, 2);
       if (response.ok) {
         Alert.alert('Success', 'Examination has started');
         getData();
@@ -213,7 +187,7 @@ const AppointmentDetailScreen = () => {
         return;
       }
 
-      const statusResponse = await updateAppointmentStatus(appointmentID, 'Completed');
+      const statusResponse = await updateAppointmentStatus(appointmentID, 3);
 
       if (statusResponse.ok) {
         Alert.alert('Success', 'Appointment completed');
@@ -355,7 +329,7 @@ const AppointmentDetailScreen = () => {
           </View>
 
           {/* Paraclinical Examinations */}
-          {appointment.status === 'In Progress' && (
+          {appointment.status === 2 && (
             <View className="mb-3 rounded-lg bg-white p-4 shadow-sm">
               <Text className="mb-3 text-base font-semibold text-gray-800">
                 Paraclinical Examinations
@@ -427,7 +401,7 @@ const AppointmentDetailScreen = () => {
                         <Text className="font-medium text-gray-800">
                           {item.clinicalService?.name}
                         </Text>
-                        <StatusBadge status={item.status} />
+                        {/* <StatusBadge status={item.status} /> */}
                       </View>
 
                       {item.status === 'COMPLETED' && (
@@ -449,7 +423,7 @@ const AppointmentDetailScreen = () => {
 
           {/* Exam Results - Only show when completed and not in progress */}
           {appointment.appointmentService === 'COMPLETED' &&
-            appointment.status !== 'In Progress' && (
+            appointment.status !== 2 && (
               <View className="mb-3 rounded-lg bg-white p-4 shadow-sm">
                 <Text className="mb-2 text-base font-semibold text-gray-800">
                   Examination Results
@@ -462,7 +436,7 @@ const AppointmentDetailScreen = () => {
                         <Text className="font-medium text-gray-800">
                           {item.clinicalService?.name}
                         </Text>
-                        <StatusBadge status={item.status} />
+                        {/* <StatusBadge status={item.status} /> */}
                       </View>
 
                       {item.status === 'COMPLETED' && (
@@ -484,7 +458,7 @@ const AppointmentDetailScreen = () => {
             )}
 
           {/* Medical Diagnosis Section */}
-          {(appointment.status === 'In Progress' || appointment.status === 'Completed') && (
+          {(appointment.status === 2 || appointment.status === 3) && (
             <View className="mb-3 rounded-lg bg-white p-4 shadow-sm">
               <Text className="mb-3 text-base font-semibold text-gray-800">
                 Diagnosis & Treatment
@@ -498,7 +472,7 @@ const AppointmentDetailScreen = () => {
                   numberOfLines={2}
                   value={diagnosis}
                   onChangeText={setDiagnosis}
-                  editable={appointment.status === 'In Progress'}
+                  editable={appointment.status === 2}
                   placeholder="Enter diagnosis..."
                 />
               </View>
@@ -511,7 +485,7 @@ const AppointmentDetailScreen = () => {
                   numberOfLines={12}
                   value={prescription}
                   onChangeText={setPrescription}
-                  editable={appointment.status === 'In Progress'}
+                  editable={appointment.status === 2}
                   placeholder="Enter prescription..."
                 />
               </View>
@@ -524,14 +498,14 @@ const AppointmentDetailScreen = () => {
                   numberOfLines={2}
                   value={notes}
                   onChangeText={setNotes}
-                  editable={appointment.status === 'In Progress'}
+                  editable={appointment.status === 2}
                   placeholder="Additional notes..."
                 />
               </View>
             </View>
           )}
 
-          {appointment.status === 'In Progress' && (
+          {appointment.status === 2 && (
             <View className="mb-3 rounded-lg bg-white p-4 shadow-sm">
               <DateTimeField
                 label="Follow-up Appointment"
@@ -561,7 +535,7 @@ const AppointmentDetailScreen = () => {
           )}
 
           {/* Action Buttons */}
-          {(appointment.status === 'Pending' || appointment.status === 'Scheduled') && (
+          {(appointment.status === 0 || appointment.status === 1) && (
             <TouchableOpacity
               className="mb-6 rounded-lg bg-emerald-600 py-3"
               onPress={handleStartExamination}>
@@ -569,7 +543,7 @@ const AppointmentDetailScreen = () => {
             </TouchableOpacity>
           )}
 
-          {appointment.status === 'In Progress' && (
+          {appointment.status === 2 && (
             <TouchableOpacity
               className="mb-6 rounded-lg bg-green-600 py-3"
               onPress={handleCompleteAppointment}>

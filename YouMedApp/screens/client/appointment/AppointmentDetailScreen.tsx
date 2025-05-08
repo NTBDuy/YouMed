@@ -9,51 +9,10 @@ import { AuthContext } from 'contexts/AuthContext';
 import HeaderSection from 'components/HeaderSection';
 import { formatLocaleDateTime } from 'utils/datetimeUtils';
 import { Ionicons } from '@expo/vector-icons';
-import Appointment from 'types/Appointment';
+import Appointment, { AppointmentStatus } from 'types/Appointment';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPhone, faLocationDot } from '@fortawesome/free-solid-svg-icons';
-
-const StatusBadge = ({ status }: { status: string }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Completed':
-        return 'bg-green-100 text-green-800';
-      case 'Pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Cancelled':
-        return 'bg-red-100 text-red-800';
-      case 'Scheduled':
-        return 'bg-blue-100 text-blue-800';
-      case 'In Progress':
-        return 'bg-orange-100 text-orange-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'Completed':
-        return 'Completed';
-      case 'Pending':
-        return 'Pending';
-      case 'Cancelled':
-        return 'Cancelled';
-      case 'Scheduled':
-        return 'Scheduled';
-      case 'In Progress':
-        return 'In Progress';
-    }
-  };
-
-  return (
-    <View className={`rounded-full px-3 py-1 ${getStatusColor(status).split(' ')[0]}`}>
-      <Text className={`text-xs font-medium ${getStatusColor(status).split(' ')[1]}`}>
-        {getStatusText(status)}
-      </Text>
-    </View>
-  );
-};
+import StatusBadge from 'components/StatusBadge';
 
 const AppointmentInfoItem = ({
   icon,
@@ -118,7 +77,7 @@ const AppointmentDetailScreen = () => {
         style: 'destructive',
         onPress: async () => {
           try {
-            const response = await updateAppointmentStatus(appointmentID, 'Cancelled');
+            const response = await updateAppointmentStatus(appointmentID, 4);
             if (response.ok) {
               Alert.alert('Success', 'Appointment cancelled successfully');
               await notifyAppointmentCancelled(user!.userID, refreshUnreadCount);
@@ -242,7 +201,7 @@ const AppointmentDetailScreen = () => {
         </View>
 
         {/* Action buttons */}
-        {['Pending', 'Scheduled'].includes(appointment.status) && (
+        {[0, 1].includes(appointment.status) && (
           <View className="mx-4 mb-8 mt-2 flex-row">
             <Pressable
               className="mr-2 flex-1 items-center rounded-lg bg-blue-600 py-4"
@@ -257,7 +216,7 @@ const AppointmentDetailScreen = () => {
           </View>
         )}
 
-        {appointment.status === 'Completed' && (
+        {appointment.status === 3 && (
           <View className="mx-4 mb-8 mt-2">
             <Pressable
               className="items-center rounded-lg bg-blue-600 py-4"

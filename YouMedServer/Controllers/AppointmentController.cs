@@ -164,7 +164,7 @@ namespace YouMedServer.Controllers
                 Clinic = clinic,
                 Doctor = doctor,
                 AppointmentDate = dto.AppointmentDate,
-                Status = "Pending",
+                Status = AppointmentStatus.Pending,
                 SymptomNote = dto.SymptomNote,
                 CreatedAt = DateTime.Now,
                 AppointmentType = dto.AppointmentType,
@@ -286,7 +286,7 @@ namespace YouMedServer.Controllers
                 return NotFound(new { message = "Appointment not found." });
 
             appointment.AppointmentDate = dto.AppointmentDate;
-            appointment.Status = "Pending";
+            appointment.Status = AppointmentStatus.Pending;
             appointment.SymptomNote = dto.SymptomNote;
 
             await _dbContext.SaveChangesAsync();
@@ -297,7 +297,7 @@ namespace YouMedServer.Controllers
         // PUT: api/appointment/{appointmentId}/status
         // Cập nhật trạng thái của lịch hẹn theo AppointmentID
         [HttpPut("{appointmentId}/status")]
-        public async Task<IActionResult> UpdateStatus(int appointmentId, string status)
+        public async Task<IActionResult> UpdateStatus(int appointmentId, AppointmentStatus status)
         {
             var appointment = await _dbContext.Appointments.FindAsync(appointmentId);
             if (appointment == null)

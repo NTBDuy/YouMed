@@ -125,7 +125,7 @@ const MedicalHistoryScreen = () => {
                 <Ionicons name="document-text-outline" size={64} color="#d1d5db" />
                 <Text className="mt-4 text-center text-gray-500">
                   No medical records found.{'\n'}
-                  {user?.role == 1 && <>Your history will appear here after visits.</>}
+                  {user?.role == 0 && <>Your history will appear here after visits.</>}
                 </Text>
               </View>
             )}

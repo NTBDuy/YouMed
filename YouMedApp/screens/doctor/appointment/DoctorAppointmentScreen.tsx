@@ -21,7 +21,7 @@ import { TabView, TabBar } from 'react-native-tab-view';
 import HeaderSection from 'components/HeaderSection';
 
 import { formatLocaleDateTime } from 'utils/datetimeUtils';
-import Appointment from 'types/Appointment';
+import Appointment, { AppointmentStatus } from 'types/Appointment';
 import { fetchAppointments } from 'utils/apiUtils';
 
 // Define sort types
@@ -73,8 +73,8 @@ const DoctorAppointmentScreen = () => {
           const appointmentDate = new Date(appointment.appointmentDate);
           appointmentDate.setHours(0, 0, 0, 0);
           return (
-            (appointment.status === 'Scheduled' ||
-              appointment.status === 'In Progress') &&
+            (appointment.status === 1 ||
+              appointment.status === 2) &&
             appointmentDate.getTime() === today.getTime()
           );
         });
@@ -83,15 +83,15 @@ const DoctorAppointmentScreen = () => {
           const appointmentDate = new Date(appointment.appointmentDate);
           appointmentDate.setHours(0, 0, 0, 0);
           return (
-            (appointment.status === 'Scheduled' ||
-              appointment.status === 'In Progress') &&
+            (appointment.status === 1 ||
+              appointment.status === 2) &&
             appointmentDate.getTime() > today.getTime()
           );
         });
 
         const historyAppointments = resp.filter(
           (appointment: Appointment) =>
-            appointment.status === 'Completed' || appointment.status === 'Cancelled'
+            appointment.status === 3 || appointment.status === 4
         );
 
         // Apply initial sorting
@@ -121,7 +121,7 @@ const DoctorAppointmentScreen = () => {
           new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime()
         );
       case SORT_OPTIONS.STATUS:
-        return sortedData.sort((a, b) => a.status.localeCompare(b.status));
+        return sortedData.sort((a, b) => a.status - b.status);
       case SORT_OPTIONS.TYPE_NEW:
         return sortedData.sort((a, b) => {
           if (a.appointmentType === 'NEW_VISIT' && b.appointmentType !== 'NEW_VISIT') return -1;
@@ -188,16 +188,15 @@ const DoctorAppointmentScreen = () => {
     </View>
   );
 
-  const getStatusConfig = (status: string) => {
-    const statusLower = status;
-    switch (statusLower) {
-      case 'Scheduled':
+  const getStatusConfig = (status: number) => {
+    switch (status) {
+      case 1:
         return { textColor: 'text-emerald-600', bgColor: 'bg-emerald-100', iconColor: '#0d9488' };
-      case 'Completed':
+      case 3:
         return { textColor: 'text-green-600', bgColor: 'bg-green-100', iconColor: '#10b981' };
-      case 'Cancelled':
+      case 4:
         return { textColor: 'text-red-600', bgColor: 'bg-red-100', iconColor: '#ef4444' };
-      case 'In Progress':
+      case 2:
         return { textColor: 'text-orange-600', bgColor: 'bg-orange-100', iconColor: '#ea580c' };
       default:
         return { textColor: 'text-gray-600', bgColor: 'bg-gray-100', iconColor: '#6b7280' };
@@ -228,7 +227,7 @@ const DoctorAppointmentScreen = () => {
                 className={`flex-row items-center rounded-full ${statusConfig.bgColor} px-3 py-1`}>
                 <FontAwesomeIcon icon={faCircle} size={8} color={statusConfig.iconColor} />
                 <Text className={`ml-1 text-xs font-medium ${statusConfig.textColor}`}>
-                  {item.status}
+                  {AppointmentStatus[item.status]}
                 </Text>
               </View>
               

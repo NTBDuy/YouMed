@@ -23,7 +23,7 @@ import {
   fetchAppointments,
   fetchTodayClinicStats,
 } from 'utils/apiUtils';
-import Appointment from 'types/Appointment';
+import Appointment, { AppointmentStatus } from 'types/Appointment';
 
 const ClinicHomeScreen = () => {
   const navigation = useNavigation<any>();
@@ -67,18 +67,18 @@ const ClinicHomeScreen = () => {
     }
   };
 
-  const getStatusConfig = (status: string) => {
-    const statusLower = status.toLowerCase();
+  const getStatusConfig = (status: number) => {
+    const statusLower = status;
     switch (statusLower) {
-      case 'scheduled':
+      case 1:
         return { textColor: 'text-cyan-600', bgColor: 'bg-cyan-100', iconColor: '#0d9488' };
-      case 'completed':
+      case 3:
         return { textColor: 'text-green-600', bgColor: 'bg-green-100', iconColor: '#10b981' };
-      case 'cancelled':
+      case 4:
         return { textColor: 'text-red-600', bgColor: 'bg-red-100', iconColor: '#ef4444' };
-      case 'pending':
+      case 0:
         return { textColor: 'text-yellow-600', bgColor: 'bg-yellow-100', iconColor: '#fbbf24' };
-      case 'in progress':
+      case 2:
         return { textColor: 'text-blue-600', bgColor: 'bg-blue-100', iconColor: '#3b82f6' };
       default:
         return { textColor: 'text-gray-600', bgColor: 'bg-gray-100', iconColor: '#6b7280' };
@@ -225,7 +225,7 @@ const ClinicHomeScreen = () => {
                           className={`rounded-full ${getStatusConfig(appointment.status).bgColor} px-3 py-1`}>
                           <Text
                             className={`text-xs font-medium ${getStatusConfig(appointment.status).textColor}`}>
-                            {appointment.status}
+                            {AppointmentStatus[appointment.status]}
                           </Text>
                         </View>
                       </View>

@@ -34,35 +34,9 @@ import DateTimePickerModal from 'components/DateTimePickerModal';
 import { formatDate, formatDatetime, formatTime } from 'utils/datetimeUtils';
 import { notifyAppointmentCancelled, notifyAppointmentReScheduled } from 'utils/notificationUtils';
 import { getGenderText } from 'utils/userHelpers';
-import Appointment from 'types/Appointment';
+import Appointment, { AppointmentStatus } from 'types/Appointment';
 import AppointmentClinicalServices from 'types/AppointmentClinicalServices';
-
-const StatusBadge = ({ status }: { status: string }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Completed':
-        return 'bg-green-100 text-green-800';
-      case 'In Progress':
-        return 'bg-orange-100 text-orange-800';
-      case 'Pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Cancelled':
-        return 'bg-red-100 text-red-800';
-      case 'Scheduled':
-        return 'bg-cyan-100 text-cyan-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const [bg, text] = getStatusColor(status).split(' ');
-
-  return (
-    <View className={`rounded-full px-3 py-1 ${bg}`}>
-      <Text className={`text-xs font-medium ${text}`}>{status}</Text>
-    </View>
-  );
-};
+import StatusBadge from 'components/StatusBadge';
 
 const AppointmentDetailScreen = () => {
   const navigation = useNavigation<any>();
@@ -183,7 +157,7 @@ const AppointmentDetailScreen = () => {
 
   const handleConfirmAppointment = async () => {
     try {
-      const response = await updateAppointmentStatus(appointmentID, 'Scheduled');
+      const response = await updateAppointmentStatus(appointmentID, 1);
       if (response.ok) {
         Alert.alert('Confirmed', 'Appointment confirmed successfully');
         getData();
@@ -195,7 +169,7 @@ const AppointmentDetailScreen = () => {
 
   const handleCancelAppointment = async () => {
     try {
-      const response = await updateAppointmentStatus(appointmentID, 'Cancelled');
+      const response = await updateAppointmentStatus(appointmentID, 4);
       if (response.ok) {
         await notifyAppointmentCancelled(appointment!.patient.userID, refreshUnreadCount);
         Alert.alert('Cancelled', 'Appointment cancelled successfully');
@@ -271,7 +245,7 @@ const AppointmentDetailScreen = () => {
           <SectionHeader title="Appointment Time" icon="calendar" color="#0891b2" />
           <InfoItem label="Scheduled Time" value={formatDatetime(appointment.appointmentDate)} />
 
-          {(appointment.status === 'Pending' || appointment.status === 'Scheduled') && (
+          {(appointment.status === 0 || appointment.status === 1) && (
             <View className="mt-4">
               <DateTimeField
                 label="New Date"
@@ -307,7 +281,7 @@ const AppointmentDetailScreen = () => {
         </View>
 
 
-        {appointment.status === 'In Progress' && (
+        {appointment.status === 3 && (
           <View className="mt-4 rounded-lg bg-white p-4 shadow-sm">
             <SectionHeader title="Requested Examinations" icon="flask" color="#0891b2" />
 
@@ -320,7 +294,7 @@ const AppointmentDetailScreen = () => {
                     <Text className="font-medium text-gray-800">
                       {service.clinicalService?.name}
                     </Text>
-                    <StatusBadge status={service.status} />
+                    {/* <StatusBadge status={service.status} /> */}
                   </View>
 
                   <View className="p-3">
@@ -366,7 +340,7 @@ const AppointmentDetailScreen = () => {
         )}
 
         {/* Hiển thị kết quả xét nghiệm cho các trạng thái khác */}
-        {appointment.status !== 'In Progress' && appointment.appointmentService === 'COMPLETED' && (
+        {appointment.status !== 3 && appointment.appointmentService === 'COMPLETED' && (
           <View className="mt-4 rounded-lg bg-white p-4 shadow-sm">
             <SectionHeader title="Examination Results" icon="flask" color="#0891b2" />
 
@@ -379,7 +353,7 @@ const AppointmentDetailScreen = () => {
                     <Text className="font-medium text-gray-800">
                       {service.clinicalService?.name}
                     </Text>
-                    <StatusBadge status={service.status} />
+                    {/* <StatusBadge status={service.status} /> */}
                   </View>
 
                   {service.status === 'COMPLETED' && (
@@ -401,7 +375,7 @@ const AppointmentDetailScreen = () => {
           </View>
         )}
 
-        {appointment.status === 'Pending' && (
+        {appointment.status === 0 && (
           <View className="my-6 flex-row justify-between">
             <Pressable
               className="w-[48%] rounded-lg bg-blue-600 p-3"
@@ -416,7 +390,7 @@ const AppointmentDetailScreen = () => {
           </View>
         )}
 
-        {appointment.status === 'Scheduled' && (
+        {appointment.status === 1 && (
           <View className="my-6 flex-row justify-between">
             <Pressable
               className="flex-end w-[98%] rounded-lg bg-red-600 p-3"

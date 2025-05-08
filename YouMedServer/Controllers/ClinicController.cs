@@ -35,9 +35,9 @@ namespace YouMedServer.Controllers
             var data = new ClinicStatsDTO
             {
                 TodayAppointments = appointments.Count,
-                CompletedAppointments = appointments.Count(a => a.Status == "Completed"),
-                PendingAppointments = appointments.Count(a => a.Status == "Pending"),
-                ScheduledAppointments = appointments.Count(a => a.Status == "Scheduled")
+                CompletedAppointments = appointments.Count(a => a.Status == AppointmentStatus.Completed),
+                PendingAppointments = appointments.Count(a => a.Status == AppointmentStatus.Pending),
+                ScheduledAppointments = appointments.Count(a => a.Status == AppointmentStatus.Scheduled)
             };
 
             return Ok(data);

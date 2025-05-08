@@ -27,7 +27,7 @@ import { fetchAppointments } from 'utils/apiUtils';
 import { TabView, TabBar } from 'react-native-tab-view';
 import HeaderSection from 'components/HeaderSection';
 import { formatLocaleDateTime } from 'utils/datetimeUtils';
-import Appointment from 'types/Appointment';
+import Appointment, { AppointmentStatus } from 'types/Appointment';
 
 // Define sort types
 const SORT_OPTIONS = {
@@ -73,18 +73,18 @@ const ClinicAppointmentScreen = () => {
 
         const activeAppointments = resp.filter(
           (appointment: Appointment) =>
-            appointment.status.toLowerCase() === 'scheduled' ||
-            appointment.status.toLowerCase() === 'in progress'
+            appointment.status === 1 ||
+            appointment.status === 2
         );
 
         const pendingAppointments = resp.filter(
-          (appointment: Appointment) => appointment.status.toLowerCase() === 'pending'
+          (appointment: Appointment) => appointment.status === 0
         );
 
         const historyAppointments = resp.filter(
           (appointment: Appointment) =>
-            appointment.status.toLowerCase() === 'completed' ||
-            appointment.status.toLowerCase() === 'cancelled'
+            appointment.status === 3 ||
+            appointment.status === 4
         );
 
         // Apply initial sorting
@@ -113,7 +113,7 @@ const ClinicAppointmentScreen = () => {
           (a, b) => new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime()
         );
       case SORT_OPTIONS.STATUS:
-        return sortedData.sort((a, b) => a.status.localeCompare(b.status));
+        return sortedData.sort((a, b) => a.status - b.status);
       case SORT_OPTIONS.PATIENT_NAME:
         return sortedData.sort((a, b) => a.patient.fullname.localeCompare(b.patient.fullname));
       case SORT_OPTIONS.DOCTOR_NAME:
@@ -145,18 +145,18 @@ const ClinicAppointmentScreen = () => {
     }
   };
 
-  const getStatusConfig = (status: string) => {
-    const statusLower = status.toLowerCase();
+  const getStatusConfig = (status: number) => {
+    const statusLower = status;
     switch (statusLower) {
-      case 'scheduled':
+      case 1:
         return { textColor: 'text-cyan-600', bgColor: 'bg-cyan-100', iconColor: '#0d9488' };
-      case 'in progress':
+      case 2:
         return { textColor: 'text-orange-600', bgColor: 'bg-orange-100', iconColor: '#ea580c' };
-      case 'completed':
+      case 3:
         return { textColor: 'text-green-600', bgColor: 'bg-green-100', iconColor: '#10b981' };
-      case 'cancelled':
+      case 4:
         return { textColor: 'text-red-600', bgColor: 'bg-red-100', iconColor: '#ef4444' };
-      case 'pending':
+      case 0:
         return { textColor: 'text-yellow-600', bgColor: 'bg-yellow-100', iconColor: '#fbbf24' };
       default:
         return { textColor: 'text-gray-600', bgColor: 'bg-gray-100', iconColor: '#6b7280' };
@@ -167,10 +167,10 @@ const ClinicAppointmentScreen = () => {
     if (!searchQuery.trim()) return appointments;
 
     return appointments.filter((appointment) => {
-      const patientName = appointment.patient.fullname.toLowerCase();
-      const doctorName = appointment.doctor.user.fullname.toLowerCase();
+      const patientName = appointment.patient.fullname;
+      const doctorName = appointment.doctor.user.fullname;
       const appointmentId = appointment.appointmentID.toString();
-      const query = searchQuery.toLowerCase();
+      const query = searchQuery;
 
       return (
         patientName.includes(query) || doctorName.includes(query) || appointmentId.includes(query)
@@ -208,7 +208,7 @@ const ClinicAppointmentScreen = () => {
               className={`flex-row items-center rounded-full ${statusConfig.bgColor} px-3 py-1`}>
               <FontAwesomeIcon icon={faCircle} size={8} color={statusConfig.iconColor} />
               <Text className={`ml-1 text-xs font-medium ${statusConfig.textColor}`}>
-                {item.status}
+                {AppointmentStatus[item.status]}
               </Text>
             </View>
           </View>

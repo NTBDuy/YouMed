@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace YouMedServer.Models.Entities
 {
+    public enum AppointmentStatus { Pending, Scheduled, InProgress, Completed, Cancelled }
+
     public class Appointment
     {
         [Key]
@@ -23,7 +25,7 @@ namespace YouMedServer.Models.Entities
 
         [MaxLength(20)]
         [Required]
-        public required string Status { get; set; }
+        public required AppointmentStatus Status { get; set; }
 
         public string? SymptomNote { get; set; }
 
@@ -34,7 +36,7 @@ namespace YouMedServer.Models.Entities
         public required string AppointmentType { get; set; }
 
         public int? RelatedAppointmentID { get; set; }
-        
+
         public string? AppointmentService { get; set; } = "NO REQUEST";
     }
 }

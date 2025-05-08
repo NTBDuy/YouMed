@@ -50,10 +50,10 @@ namespace YouMedServer.Controllers
 
             var data = new DoctorStatsDTO
             {
-                Upcoming = appointments.Count(a => a.Status == "Scheduled"),
-                Completed = appointments.Count(a => a.Status == "Completed"),
-                Cancelled = appointments.Count(a => a.Status == "Cancelled"),
-                Total = appointments.Count - appointments.Count(a => a.Status == "Pending")
+                Upcoming = appointments.Count(a => a.Status == AppointmentStatus.Scheduled),
+                Completed = appointments.Count(a => a.Status == AppointmentStatus.Completed),
+                Cancelled = appointments.Count(a => a.Status == AppointmentStatus.Cancelled),
+                Total = appointments.Count - appointments.Count(a => a.Status == AppointmentStatus.Pending)
             };
 
             return Ok(data);
@@ -62,7 +62,7 @@ namespace YouMedServer.Controllers
         // GET: api/doctor/appointment?userId={userId}?status={status}
         // Lấy danh sách lịch hẹn của bác sĩ theo trạng thái (Scheduled, Completed, Cancelled)
         [HttpGet("appointments")]
-        public async Task<IActionResult> GetUpcomingAppointment([FromQuery] int userId, [FromQuery] string status)
+        public async Task<IActionResult> GetUpcomingAppointment([FromQuery] int userId, [FromQuery] int status)
         {
             var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
             if (doctor == null)
@@ -70,7 +70,7 @@ namespace YouMedServer.Controllers
 
             var appointments = await _dbContext.Appointments
                 .Include(a => a.Patient)
-                .Where(a => a.DoctorID == doctor.DoctorID && a.Status == status)
+                .Where(a => a.DoctorID == doctor.DoctorID && a.Status == (AppointmentStatus)status)
                 .ToListAsync();
 
             if (appointments == null)

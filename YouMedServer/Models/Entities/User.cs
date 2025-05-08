@@ -3,12 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YouMedServer.Models.Entities
 {
-    public enum UserRole
-    {
-        Client,
-        Doctor,
-        Clinic
-    }
+    public enum UserRole { Client, Doctor, Clinic }
 
     public class User
     {

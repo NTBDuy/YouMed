@@ -67,7 +67,7 @@ namespace YouMedServer.Controllers
         // GET: api/user/{userId}/appointments
         // Lấy danh sách lịch hẹn
         [HttpGet("{userId}/appointments")]
-        public async Task<IActionResult> GetAppointmentsByRoles(int userId, [FromQuery] string? status = null)
+        public async Task<IActionResult> GetAppointmentsByRoles(int userId, [FromQuery] AppointmentStatus? status = null)
         {
             var user = await _dbContext.Users.FindAsync(userId);
             if (user == null)
@@ -204,7 +204,7 @@ namespace YouMedServer.Controllers
             return records;
         }
 
-        private async Task<List<Appointment>> GetClientAppointmentsAsync(int userId, string? status)
+        private async Task<List<Appointment>> GetClientAppointmentsAsync(int userId, AppointmentStatus? status)
         {
             var patients = await _dbContext.Patients
                 .Where(p => p.UserID == userId && !p.IsDeleted)
@@ -218,7 +218,7 @@ namespace YouMedServer.Controllers
             var query = _dbContext.Appointments
                 .Where(a => patientIds.Contains(a.PatientID));
 
-            if (!string.IsNullOrEmpty(status))
+            if (status != null)
             {
                 query = query.Where(a => a.Status == status);
             }
@@ -233,7 +233,7 @@ namespace YouMedServer.Controllers
             return appointments;
         }
 
-        private async Task<List<Appointment>> GetDoctorAppointmentsAsync(int userId, string? status = null)
+        private async Task<List<Appointment>> GetDoctorAppointmentsAsync(int userId, AppointmentStatus? status = null)
         {
             var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserID == userId);
 
@@ -243,7 +243,7 @@ namespace YouMedServer.Controllers
              var query = _dbContext.Appointments
                 .Where(a => a.DoctorID == doctor.DoctorID);
 
-            if (!string.IsNullOrEmpty(status))
+            if (status != null)
             {
                 query = query.Where(a => a.Status == status);
             }

@@ -151,9 +151,18 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<AppointmentClinicalService>()
-    .HasOne(a => a.MedicalRecord)
-    .WithMany()
-    .HasForeignKey(a => a.RecordID)
-    .OnDelete(DeleteBehavior.Cascade);
+            .HasOne(a => a.MedicalRecord)
+            .WithMany()
+            .HasForeignKey(a => a.RecordID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Appointment>()
+            .Property(a => a.Status)
+            .HasConversion<string>();
+
+
+        modelBuilder.Entity<User>()
+            .Property(a => a.Role)
+            .HasConversion<string>();
     }
 }

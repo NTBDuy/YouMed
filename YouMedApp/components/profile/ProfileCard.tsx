@@ -19,7 +19,7 @@ const ProfileCard = () => {
         </View>
         <View className="flex-1">
           <Text className="text-lg font-bold text-gray-800">
-            {user?.role == 2 ? 'Dr. ' : ''}
+            {user?.role == 1 ? 'Dr. ' : ''}
             {user?.fullname && user.fullname.trim() !== '' ? user.fullname : user?.email}
           </Text>
           <Text className="text-gray-500">
